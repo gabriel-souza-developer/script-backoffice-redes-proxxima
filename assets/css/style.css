@@ -79,7 +79,7 @@ body {
 }
 
 .app-header__logo {
-    max-width: 120px;
+    max-width: 300px;
     margin-bottom: 10px;
 }
 
@@ -252,7 +252,7 @@ textarea.form-control {
 .app-aside__title {
     color: var(--primary-color);
     margin-bottom: 15px;
-    font-size: 1.2em;
+    font-size: 1.4em;
     font-weight: 600;
     text-align: center;
     text-transform: uppercase;
@@ -264,14 +264,16 @@ textarea.form-control {
 }
 
 .app-aside__text {
-    white-space: pre-wrap;
     font-family: 'Courier New', monospace;
-    font-size: 0.8em;
+    font-size: 1em;
+    height: 460px;
     background-color: #fff;
-    padding: 10px;
+    padding: 15px;
     border-radius: 8px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--input-border-color);
     line-height: 1.4;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #tentouPeloAnielHelp {
