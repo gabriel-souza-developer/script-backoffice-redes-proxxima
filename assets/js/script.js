@@ -29,21 +29,21 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        return tipoServico || "Não informado";
+        return tipoServico || "";
     }
 
     function gerarTextoResumoHTML() {
         const protocolo = document.getElementById('protocolo').value.trim() || "Não informado";
         const pppoe = document.getElementById('pppoe').value.trim() || "Não informado";
         const serialOnuAntigaValor = serialOnuAntiga?.value.trim() || "";
-        const serialOnuNovaValor = serialOnuNova?.value.trim() || "Não informado";
-        const tipoEquipamento = tipoEquipamentoSelect.value.trim() || "Não informado";
+        const serialOnuNovaValor = serialOnuNova?.value.trim() || "";
+        const tipoEquipamento = tipoEquipamentoSelect.value.trim() || "";
         const marcaONU = marcaONUSelect.value.trim() || "";
         const vlan = vlanInput.value.trim() || "";
         const olt = document.getElementById('olt').value.trim() || "";
         let tipoServico = getTipoServico();
         const descricaoServico = document.getElementById('descricaoServico').value.trim() || "";
-        const tentouPeloAniel = tentouPeloAnielSelect.value.trim() || "Não informado";
+        const tentouPeloAniel = tentouPeloAnielSelect.value.trim() || "";
         
         let quantidadePortasCto = "";
         if (verificarCtoRadio.checked) {
