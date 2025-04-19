@@ -20,6 +20,51 @@ document.addEventListener('DOMContentLoaded', function () {
     const oltInput = document.getElementById('olt');
     const descricaoServicoInput = document.getElementById('descricaoServico');
 
+    
+    const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+    const pageFooter = document.querySelector('.app-footer'); 
+
+    
+    if (scrollToBottomBtn && pageFooter) { // Verifica se o botão e o rodapé existem
+
+        // Função para mostrar/esconder o botão baseado na posição de rolagem
+        const checkScrollPosition = () => {
+            // Altura total da página
+            const scrollHeight = document.documentElement.scrollHeight;
+            // Altura da janela visível
+            const clientHeight = document.documentElement.clientHeight;
+            // Posição atual de rolagem
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+            // Mostra o botão se o usuário rolou um pouco (ex: 100px)
+            // E se o final da página *não* está visível
+            if (scrollTop > 50 && (scrollTop + clientHeight < scrollHeight - 50)) { // 50px de margem no final
+                scrollToBottomBtn.classList.add('visible');
+            } else {
+                scrollToBottomBtn.classList.remove('visible');
+            }
+        };
+
+        // Adiciona listener para o evento de rolagem da janela
+        window.addEventListener('scroll', checkScrollPosition);
+
+        // Verifica a posição inicial ao carregar a página
+        checkScrollPosition();
+
+        // Adiciona listener para o clique no botão
+        scrollToBottomBtn.addEventListener('click', () => {
+            // Rola suavemente para o rodapé
+            pageFooter.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+            // Alternativa: Rolar para o fim absoluto da página
+            // window.scrollTo({
+            //     top: document.documentElement.scrollHeight,
+            //     behavior: 'smooth'
+            // });
+        });
+    }
+
+
     // === 2. Funções Auxiliares ===
 
     function getTipoServico() {
