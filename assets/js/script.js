@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     // === 1. Elementos do DOM ===
+    const form = document.getElementById('formularioResumo');
     const botaoGerarCopiar = document.getElementById('gerarCopiarResumo');
     const resumoTexto = document.getElementById('resumoTexto');
     const outroTipoServicoRadio = document.getElementById('outro');
@@ -12,121 +13,244 @@ document.addEventListener('DOMContentLoaded', function () {
     const verificarCtoRadio = document.getElementById('verificarCto');
     const appAside = document.querySelector('.app-aside');
     const vlanInput = document.getElementById('vlan');
-    const serialOnuAntiga = document.getElementById('serialOnuAntiga');
-    const serialOnuNova = document.getElementById('serialOnuNova');
+    const serialOnuAntigaInput = document.getElementById('serialOnuAntiga');
+    const serialOnuNovaInput = document.getElementById('serialOnuNova');
+    const protocoloInput = document.getElementById('protocolo');
+    const pppoeInput = document.getElementById('pppoe');
+    const oltInput = document.getElementById('olt');
+    const descricaoServicoInput = document.getElementById('descricaoServico');
 
     // === 2. Funções Auxiliares ===
+
     function getTipoServico() {
         const tipoServicoRadios = document.querySelectorAll('input[name="tipoServico"]');
         let tipoServico = '';
-
-        tipoServicoRadios.forEach(radio => {
+        for (const radio of tipoServicoRadios) {
             if (radio.checked) {
-                tipoServico = radio.value;
-                if (radio.id === 'outro') {
-                    tipoServico = outroTipoServicoInput.value.trim();
-                }
+                tipoServico = (radio.id === 'outro') ? outroTipoServicoInput.value.trim() : radio.value;
+                break;
             }
-        });
-
-        return tipoServico || "";
+        }
+        if (verificarCtoRadio.checked) {
+            const quantidadePortasCto = quantidadePortasCtoSelect.value.trim();
+            if (quantidadePortasCto) {
+                tipoServico += ` (Portas: ${quantidadePortasCto})`;
+            }
+        }
+        return tipoServico;
     }
 
+    // --- Função HTML com formatação restaurada ---
     function gerarTextoResumoHTML() {
-        const protocolo = document.getElementById('protocolo').value.trim() || "Não informado";
-        const pppoe = document.getElementById('pppoe').value.trim() || "Não informado";
-        const serialOnuAntigaValor = serialOnuAntiga?.value.trim() || "";
-        const serialOnuNovaValor = serialOnuNova?.value.trim() || "";
-        const tipoEquipamento = tipoEquipamentoSelect.value.trim() || "";
-        const marcaONU = marcaONUSelect.value.trim() || "";
-        const vlan = vlanInput.value.trim() || "";
-        const olt = document.getElementById('olt').value.trim() || "";
+        const htmlLines = [];
+        const protocolo = protocoloInput.value.trim();
+        const pppoe = pppoeInput.value.trim();
         let tipoServico = getTipoServico();
-        const descricaoServico = document.getElementById('descricaoServico').value.trim() || "";
-        const tentouPeloAniel = tentouPeloAnielSelect.value.trim() || "";
-        
-        let quantidadePortasCto = "";
-        if (verificarCtoRadio.checked) {
-            quantidadePortasCto = quantidadePortasCtoSelect.value.trim() || "Não informado";
-            tipoServico += ` (Portas: ${quantidadePortasCto})`;
+        const tentouPeloAniel = tentouPeloAnielSelect.value.trim();
+        const serialOnuAntigaValor = serialOnuAntigaInput.value.trim();
+        const serialOnuNovaValor = serialOnuNovaInput.value.trim();
+        const tipoEquipamento = tipoEquipamentoSelect.value.trim();
+        const marcaONU = marcaONUSelect.value.trim();
+        const vlan = vlanInput.value.trim();
+        const olt = oltInput.value.trim();
+        const descricaoServico = descricaoServicoInput.value.trim();
+
+        // Montagem Condicional (HTML - Formatação Anterior)
+        htmlLines.push(`<strong>INFORMAÇÕES DO CLIENTE:</strong>`);
+        htmlLines.push('<br>');
+        htmlLines.push(`Protocolo: ${protocolo}`);
+        htmlLines.push(`PPPoE: ${pppoe}`);
+        htmlLines.push('<br>'); 
+
+        htmlLines.push(`<strong>TIPO DE ATENDIMENTO:</strong> ${tipoServico}`);
+        htmlLines.push('<br>'); 
+
+        const equipamentoLines = [];
+        if (serialOnuAntigaValor) equipamentoLines.push(`SN equi. ANTIGO: ${serialOnuAntigaValor}`);
+        if (serialOnuNovaValor) equipamentoLines.push(`SN equi. <strong>NOVO/ATUAL:</strong> ${serialOnuNovaValor}`);
+        if (tipoEquipamento) equipamentoLines.push(`Modo Operacional: ${tipoEquipamento}`);
+        if (marcaONU) equipamentoLines.push(`Marca da ONU: ${marcaONU}`);
+        if (vlan) equipamentoLines.push(`VLAN: ${vlan}`);
+        if (olt) equipamentoLines.push(`Ponto de Acesso - OLT: ${olt}`);
+        if (equipamentoLines.length > 0) {
+            htmlLines.push(`<strong>INFO. EQUIPAMENTOS:</strong>`);
+            htmlLines.push('<br>'); 
+            htmlLines.push(...equipamentoLines);
+            htmlLines.push('<br>'); 
         }
 
-        return `
-<strong>INFORMAÇÕES DO CLIENTE:</strong>
+        if (descricaoServico) {
+            htmlLines.push(`<strong>DESCRIÇÃO DETALHADA:</strong> ${descricaoServico.replace(/\n/g, '<br>')}`);
+            htmlLines.push('<br>'); // Quebra após a seção
+        }
 
-Protocolo: ${protocolo} 
-PPPoE: ${pppoe}
+        if (tentouPeloAniel || !verificarCtoRadio.checked) { // Mostra Aniel se preenchido ou se não for "Verificar CTO"
+            htmlLines.push(`<strong>TENTOU PELO ANIEL:</strong> ${tentouPeloAniel || 'Não aplicável/informado'}`);
+             
+        }
 
-<strong>TIPO DE ATENDIMENTO:</strong> ${tipoServico}
-
-<strong>INFO. EQUIPAMENTOS:</strong>
-
-SN equi. ANTIGO: ${serialOnuAntigaValor} 
-
-SN equi. <strong>NOVO</strong>: ${serialOnuNovaValor}
-Modo Operacional: ${tipoEquipamento}
-Marca da ONU: ${marcaONU} 
-VLAN: ${vlan}
-Ponto de Acesso - OLT: ${olt}
-
-<strong>DESCRIÇÃO DETALHADA:</strong> ${descricaoServico}
-
-<strong>TENTOU PELO ANIEL:</strong> ${tentouPeloAniel}
-`.trim();
+        // Junta com <br> e limpa espaços/quebras extras (mantém a limpeza)
+        return htmlLines.join('<br>').replace(/^(<br>)+|(<br>)+$/g, '').replace(/(<br>\s*){3,}/g, '<br><br>');
     }
 
+    // --- Função Markdown com formatação restaurada ---
     function gerarTextoResumoMarkdown() {
-        const textoHTML = gerarTextoResumoHTML();
-        return textoHTML
-            .replace(/<strong>(.*?)<\/strong>/g, '*$1*') // Converte <strong> para * (negrito Markdown)
-            .replace(/\|/g, '\n'); // Quebra as informações agrupadas em novas linhas
+        const markdownLines = [];
+        const protocolo = protocoloInput.value.trim();
+        const pppoe = pppoeInput.value.trim();
+        let tipoServico = getTipoServico();
+        const tentouPeloAniel = tentouPeloAnielSelect.value.trim();
+        const serialOnuAntigaValor = serialOnuAntigaInput.value.trim();
+        const serialOnuNovaValor = serialOnuNovaInput.value.trim();
+        const tipoEquipamento = tipoEquipamentoSelect.value.trim();
+        const marcaONU = marcaONUSelect.value.trim();
+        const vlan = vlanInput.value.trim();
+        const olt = oltInput.value.trim();
+        const descricaoServico = descricaoServicoInput.value.trim();
+
+        // Montagem Condicional (Markdown - Formatação Anterior)
+        markdownLines.push(`*INFORMAÇÕES DO CLIENTE:*`);
+        markdownLines.push(''); 
+        markdownLines.push(`Protocolo: ${protocolo}`);
+        markdownLines.push(`PPPoE: ${pppoe}`);
+        markdownLines.push('');
+
+        markdownLines.push(`*TIPO DE ATENDIMENTO:* ${tipoServico}`);
+        markdownLines.push(''); 
+
+        const equipamentoLines = [];
+        if (serialOnuAntigaValor) equipamentoLines.push(`SN equi. ANTIGO: ${serialOnuAntigaValor}`);
+        if (serialOnuNovaValor) equipamentoLines.push(`SN equi. *NOVO/ATUAL:* ${serialOnuNovaValor}`);
+        if (tipoEquipamento) equipamentoLines.push(`Modo Operacional: ${tipoEquipamento}`);
+        if (marcaONU) equipamentoLines.push(`Marca da ONU: ${marcaONU}`);
+        if (vlan) equipamentoLines.push(`VLAN: ${vlan}`);
+        if (olt) equipamentoLines.push(`Ponto de Acesso - OLT: ${olt}`);
+        if (equipamentoLines.length > 0) {
+            markdownLines.push(`*INFO. EQUIPAMENTOS:*`);
+            markdownLines.push(''); 
+            markdownLines.push(...equipamentoLines);
+            markdownLines.push('');
+        }
+
+        if (descricaoServico) {
+            markdownLines.push(`*DESCRIÇÃO DETALHADA: ${descricaoServico}*`); // Título
+            markdownLines.push('');                     // Linha em branco depois
+        }
+
+        if (tentouPeloAniel || !verificarCtoRadio.checked) { // Mostra Aniel se preenchido ou se não for "Verificar CTO"
+            markdownLines.push(`*TENTOU PELO ANIEL:* ${tentouPeloAniel || 'Não aplicável/informado'}`);
+            // Sem linha em branco extra no final
+        }
+
+        return markdownLines.join('\n').trim();
     }
 
     function mostrarToast(mensagem) {
         const toast = document.getElementById('toast');
+        if (!toast) return;
         toast.textContent = mensagem;
         toast.classList.remove('hidden');
         toast.classList.add('show');
-    
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.classList.add('hidden'), 300);
-        }, 3000); // Toast visível por 3 segundos
+        }, 3000);
     }
-    
+
     function copiarParaAreaTransferencia(texto) {
+        if (!texto) {
+            mostrarToast("Nenhuma informação para copiar.");
+            return;
+        }
         navigator.clipboard.writeText(texto)
             .then(() => mostrarToast("Resumo copiado para a área de transferência!"))
-            .catch(() => mostrarToast("Falha ao copiar o resumo. Por favor, tente novamente."));
+            .catch(err => {
+                console.error('Erro ao copiar: ', err);
+                mostrarToast("Falha ao copiar. Verifique as permissões ou copie manualmente.");
+            });
     }
-    
 
     function atualizarEstadoCampoOutro() {
-        outroTipoServicoInput.disabled = !outroTipoServicoRadio.checked;
-        if (!outroTipoServicoRadio.checked) {
+        if (!outroTipoServicoRadio || !outroTipoServicoInput) return;
+        const habilitar = outroTipoServicoRadio.checked;
+        outroTipoServicoInput.disabled = !habilitar;
+        outroTipoServicoInput.required = habilitar;
+        if (!habilitar) {
             outroTipoServicoInput.value = '';
+            outroTipoServicoInput.setCustomValidity('');
         }
     }
 
     function atualizarVisibilidadeQuantidadeCto() {
-        quantidadePortasCtoContainer.style.display = verificarCtoRadio.checked ? 'block' : 'none';
-        if (!verificarCtoRadio.checked) {
+        if (!verificarCtoRadio || !quantidadePortasCtoContainer || !quantidadePortasCtoSelect) return;
+        const mostrar = verificarCtoRadio.checked;
+        quantidadePortasCtoContainer.style.display = mostrar ? 'block' : 'none';
+        quantidadePortasCtoSelect.required = mostrar;
+        if (!mostrar) {
             quantidadePortasCtoSelect.value = '';
+            quantidadePortasCtoSelect.setCustomValidity('');
         }
     }
 
+    function atualizarRequisitoAniel() {
+        if (!verificarCtoRadio || !tentouPeloAnielSelect) return;
+        const ehObrigatorio = !verificarCtoRadio.checked;
+        tentouPeloAnielSelect.required = ehObrigatorio;
+        if (!ehObrigatorio) {
+            tentouPeloAnielSelect.setCustomValidity('');
+        }
+    }
+
+    function atualizarRequisitoOlt() {
+        if (!verificarCtoRadio || !oltInput) return;
+        const ehObrigatorio = verificarCtoRadio.checked;
+        oltInput.required = ehObrigatorio;
+        if (!ehObrigatorio) {
+            oltInput.setCustomValidity('');
+        }
+    }
+
+    // === 3. Event Listeners e Inicialização ===
     botaoGerarCopiar.addEventListener('click', function () {
+        // Passo 1: Validar o Formulário
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            mostrarToast("Por favor, preencha todos os campos obrigatórios destacados.");
+            appAside.style.display = 'none';
+            resumoTexto.innerHTML = '';
+            return;
+        }
+
+        // Passo 2: Gerar os Resumos
         const textoResumoHTML = gerarTextoResumoHTML();
         const textoResumoMarkdown = gerarTextoResumoMarkdown();
-        resumoTexto.innerHTML = textoResumoHTML; // Exibe formatado
-        copiarParaAreaTransferencia(textoResumoMarkdown); // Copia formatado para Markdown
-        appAside.style.display = 'block';
+
+        // Passo 3: Exibir e Copiar
+        if (textoResumoHTML) {
+            resumoTexto.innerHTML = textoResumoHTML;
+            copiarParaAreaTransferencia(textoResumoMarkdown);
+            appAside.style.display = 'block';
+        } else {
+            resumoTexto.innerHTML = '<em>Erro ao gerar resumo. Verifique os campos.</em>';
+            appAside.style.display = 'block';
+            mostrarToast("Erro ao gerar resumo.");
+        }
     });
 
-    outroTipoServicoRadio.addEventListener('change', atualizarEstadoCampoOutro);
-    verificarCtoRadio.addEventListener('change', atualizarVisibilidadeQuantidadeCto);
+    // Adiciona listeners aos radios tipoServico
+    document.querySelectorAll('input[name="tipoServico"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            atualizarEstadoCampoOutro();
+            atualizarVisibilidadeQuantidadeCto();
+            atualizarRequisitoAniel();
+            atualizarRequisitoOlt();
+        });
+    });
 
-    // Inicia os estados corretos dos campos
+    // Inicialização
     atualizarEstadoCampoOutro();
     atualizarVisibilidadeQuantidadeCto();
+    atualizarRequisitoAniel();
+    atualizarRequisitoOlt();
+    appAside.style.display = 'none';
 });

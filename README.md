@@ -28,7 +28,7 @@ Uma aplicação web para registro de atendimentos técnicos da Proxxima Telecom,
 
 ## 💻 Deploy:
 
-- []
+- ![Imagem do Projeto](./assets/img/Deploy.png)
 
 <h2 id="layout">🔖 Layout:</h2> 
 
