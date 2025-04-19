@@ -271,7 +271,6 @@ textarea.form-control {
     white-space: pre-wrap; /* Mantém as quebras de linha corretas */
     word-wrap: break-word; 
     font-size: 1em;
-    height: 515px;
     padding: 17px;
     background-color: var(--primary-color);
     color: white;
@@ -291,7 +290,7 @@ textarea.form-control {
     padding: 10px;
     background-color: var(--dark-color);
     color: #fff;
-    font-size: 0.7em;
+    font-size: 1rem;
     border-radius: 0 0 15px 15px;
     width: 100%;
 }
@@ -374,7 +373,7 @@ textarea.form-control {
 
 
 /* Media Queries para Responsividade */
-@media (min-width: 768px) {
+@media (max-width: 768px) {
     .app-container {
         max-width: 650px;
     }
@@ -387,9 +386,16 @@ textarea.form-control {
     .app-main {
         max-width: 600px;
     }
+    .app-aside__title {
+        font-size: 1.2em;
+    }
 
     .app-aside {
         border-left: none;
         border-top: 1px solid var(--border-color);
+    }
+
+    .form__section-title {
+        font-size: 1.2rem;
     }
 }

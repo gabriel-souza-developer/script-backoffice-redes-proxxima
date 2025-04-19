@@ -16,51 +16,30 @@ document.addEventListener('DOMContentLoaded', function () {
     const serialOnuAntigaInput = document.getElementById('serialOnuAntiga');
     const serialOnuNovaInput = document.getElementById('serialOnuNova');
     const protocoloInput = document.getElementById('protocolo');
-    const pppoeInput = document.getElementById('pppoe');
+    const pppoeInput = document.getElementById('pppoe'); // Alvo da verificação
     const oltInput = document.getElementById('olt');
     const descricaoServicoInput = document.getElementById('descricaoServico');
 
-    
+
     const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
-    const pageFooter = document.querySelector('.app-footer'); 
+    const pageFooter = document.querySelector('.app-footer');
 
-    
-    if (scrollToBottomBtn && pageFooter) { // Verifica se o botão e o rodapé existem
 
-        // Função para mostrar/esconder o botão baseado na posição de rolagem
+    if (scrollToBottomBtn && pageFooter) {
         const checkScrollPosition = () => {
-            // Altura total da página
             const scrollHeight = document.documentElement.scrollHeight;
-            // Altura da janela visível
             const clientHeight = document.documentElement.clientHeight;
-            // Posição atual de rolagem
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
-
-            // Mostra o botão se o usuário rolou um pouco (ex: 100px)
-            // E se o final da página *não* está visível
-            if (scrollTop > 50 && (scrollTop + clientHeight < scrollHeight - 50)) { // 50px de margem no final
+            if (scrollTop > 50 && (scrollTop + clientHeight < scrollHeight - 50)) {
                 scrollToBottomBtn.classList.add('visible');
             } else {
                 scrollToBottomBtn.classList.remove('visible');
             }
         };
-
-        // Adiciona listener para o evento de rolagem da janela
         window.addEventListener('scroll', checkScrollPosition);
-
-        // Verifica a posição inicial ao carregar a página
         checkScrollPosition();
-
-        // Adiciona listener para o clique no botão
         scrollToBottomBtn.addEventListener('click', () => {
-            // Rola suavemente para o rodapé
             pageFooter.scrollIntoView({ behavior: 'smooth', block: 'end' });
-
-            // Alternativa: Rolar para o fim absoluto da página
-            // window.scrollTo({
-            //     top: document.documentElement.scrollHeight,
-            //     behavior: 'smooth'
-            // });
         });
     }
 
@@ -85,11 +64,11 @@ document.addEventListener('DOMContentLoaded', function () {
         return tipoServico;
     }
 
-    // --- Função HTML com formatação restaurada ---
+    // --- Função HTML com verificação PPPoE e formatação original ---
     function gerarTextoResumoHTML() {
         const htmlLines = [];
         const protocolo = protocoloInput.value.trim();
-        const pppoe = pppoeInput.value.trim();
+        const pppoe = pppoeInput.value.trim(); // Coleta o valor
         let tipoServico = getTipoServico();
         const tentouPeloAniel = tentouPeloAnielSelect.value.trim();
         const serialOnuAntigaValor = serialOnuAntigaInput.value.trim();
@@ -100,49 +79,50 @@ document.addEventListener('DOMContentLoaded', function () {
         const olt = oltInput.value.trim();
         const descricaoServico = descricaoServicoInput.value.trim();
 
-        // Montagem Condicional (HTML - Formatação Anterior)
+        // Montagem Condicional (HTML - Formatação Original)
         htmlLines.push(`<strong>INFORMAÇÕES DO CLIENTE:</strong>`);
         htmlLines.push('<br>');
         htmlLines.push(`Protocolo: ${protocolo}`);
-        htmlLines.push(`PPPoE: ${pppoe}`);
-        htmlLines.push('<br>'); 
+        // *** SÓ ADICIONA PPPOE SE TIVER VALOR ***
+        if (pppoe) {
+            htmlLines.push(`PPPoE: ${pppoe}`);
+        }
+        htmlLines.push('<br>'); // Quebra após a seção
 
         htmlLines.push(`<strong>TIPO DE ATENDIMENTO:</strong> ${tipoServico}`);
-        htmlLines.push('<br>'); 
+        htmlLines.push('<br>'); // Quebra após a seção
 
         const equipamentoLines = [];
         if (serialOnuAntigaValor) equipamentoLines.push(`SN equi. ANTIGO: ${serialOnuAntigaValor}`);
         if (serialOnuNovaValor) equipamentoLines.push(`SN equi. <strong>NOVO/ATUAL:</strong> ${serialOnuNovaValor}`);
-        if (tipoEquipamento) equipamentoLines.push(`Modo Operacional: ${tipoEquipamento}`);
+        if (tipoEquipamento) equipamentoLines.push(`Modo operacional da ONU: ${tipoEquipamento}`);
         if (marcaONU) equipamentoLines.push(`Marca da ONU: ${marcaONU}`);
-        if (vlan) equipamentoLines.push(`VLAN: ${vlan}`);
+        if (vlan) equipamentoLines.push(`VLAN preenchida na WAN: ${vlan}`);
         if (olt) equipamentoLines.push(`Ponto de Acesso - OLT: ${olt}`);
         if (equipamentoLines.length > 0) {
             htmlLines.push(`<strong>INFO. EQUIPAMENTOS:</strong>`);
-            htmlLines.push('<br>'); 
+            htmlLines.push('<br>');
             htmlLines.push(...equipamentoLines);
-            htmlLines.push('<br>'); 
+            htmlLines.push('<br>');
         }
 
         if (descricaoServico) {
             htmlLines.push(`<strong>DESCRIÇÃO DETALHADA:</strong> ${descricaoServico.replace(/\n/g, '<br>')}`);
-            htmlLines.push('<br>'); // Quebra após a seção
+            htmlLines.push('<br>');
         }
 
-        if (tentouPeloAniel || !verificarCtoRadio.checked) { // Mostra Aniel se preenchido ou se não for "Verificar CTO"
+        if (tentouPeloAniel || !verificarCtoRadio.checked) {
             htmlLines.push(`<strong>TENTOU PELO ANIEL:</strong> ${tentouPeloAniel || 'Não aplicável/informado'}`);
-             
         }
 
-        // Junta com <br> e limpa espaços/quebras extras (mantém a limpeza)
         return htmlLines.join('<br>').replace(/^(<br>)+|(<br>)+$/g, '').replace(/(<br>\s*){3,}/g, '<br><br>');
     }
 
-    // --- Função Markdown com formatação restaurada ---
+    // --- Função Markdown com verificação PPPoE e formatação original ---
     function gerarTextoResumoMarkdown() {
         const markdownLines = [];
         const protocolo = protocoloInput.value.trim();
-        const pppoe = pppoeInput.value.trim();
+        const pppoe = pppoeInput.value.trim(); // Coleta o valor
         let tipoServico = getTipoServico();
         const tentouPeloAniel = tentouPeloAnielSelect.value.trim();
         const serialOnuAntigaValor = serialOnuAntigaInput.value.trim();
@@ -153,38 +133,40 @@ document.addEventListener('DOMContentLoaded', function () {
         const olt = oltInput.value.trim();
         const descricaoServico = descricaoServicoInput.value.trim();
 
-        // Montagem Condicional (Markdown - Formatação Anterior)
+        // Montagem Condicional (Markdown - Formatação Original)
         markdownLines.push(`*INFORMAÇÕES DO CLIENTE:*`);
-        markdownLines.push(''); 
-        markdownLines.push(`Protocolo: ${protocolo}`);
-        markdownLines.push(`PPPoE: ${pppoe}`);
         markdownLines.push('');
+        markdownLines.push(`Protocolo: ${protocolo}`);
+        // *** SÓ ADICIONA PPPOE SE TIVER VALOR ***
+        if (pppoe) {
+            markdownLines.push(`PPPoE: ${pppoe}`);
+        }
+        markdownLines.push(''); // Linha em branco após a seção
 
         markdownLines.push(`*TIPO DE ATENDIMENTO:* ${tipoServico}`);
-        markdownLines.push(''); 
+        markdownLines.push('');
 
         const equipamentoLines = [];
         if (serialOnuAntigaValor) equipamentoLines.push(`SN equi. ANTIGO: ${serialOnuAntigaValor}`);
         if (serialOnuNovaValor) equipamentoLines.push(`SN equi. *NOVO/ATUAL:* ${serialOnuNovaValor}`);
-        if (tipoEquipamento) equipamentoLines.push(`Modo Operacional: ${tipoEquipamento}`);
+        if (tipoEquipamento) equipamentoLines.push(`Modo operacional da ONU: ${tipoEquipamento}`);
         if (marcaONU) equipamentoLines.push(`Marca da ONU: ${marcaONU}`);
-        if (vlan) equipamentoLines.push(`VLAN: ${vlan}`);
+        if (vlan) equipamentoLines.push(`VLAN preenchida na WAN: ${vlan}`);
         if (olt) equipamentoLines.push(`Ponto de Acesso - OLT: ${olt}`);
         if (equipamentoLines.length > 0) {
             markdownLines.push(`*INFO. EQUIPAMENTOS:*`);
-            markdownLines.push(''); 
+            markdownLines.push('');
             markdownLines.push(...equipamentoLines);
             markdownLines.push('');
         }
 
         if (descricaoServico) {
-            markdownLines.push(`*DESCRIÇÃO DETALHADA: ${descricaoServico}*`); // Título
-            markdownLines.push('');                     // Linha em branco depois
+            markdownLines.push(`*DESCRIÇÃO DETALHADA:* ${descricaoServico}`);
+            markdownLines.push('');
         }
 
-        if (tentouPeloAniel || !verificarCtoRadio.checked) { // Mostra Aniel se preenchido ou se não for "Verificar CTO"
+        if (tentouPeloAniel || !verificarCtoRadio.checked) {
             markdownLines.push(`*TENTOU PELO ANIEL:* ${tentouPeloAniel || 'Não aplicável/informado'}`);
-            // Sem linha em branco extra no final
         }
 
         return markdownLines.join('\n').trim();
@@ -255,6 +237,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function atualizarRequisitoPppoe() {
+        if (!verificarCtoRadio || !pppoeInput) return;
+        const ehObrigatorio = !verificarCtoRadio.checked;
+        pppoeInput.required = ehObrigatorio;
+        if (!ehObrigatorio) {
+            pppoeInput.setCustomValidity('');
+        }
+    }
+
     // === 3. Event Listeners e Inicialização ===
     botaoGerarCopiar.addEventListener('click', function () {
         // Passo 1: Validar o Formulário
@@ -289,6 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
             atualizarVisibilidadeQuantidadeCto();
             atualizarRequisitoAniel();
             atualizarRequisitoOlt();
+            atualizarRequisitoPppoe(); // Chama a função que atualiza o requisito do PPPoE
         });
     });
 
@@ -297,5 +289,6 @@ document.addEventListener('DOMContentLoaded', function () {
     atualizarVisibilidadeQuantidadeCto();
     atualizarRequisitoAniel();
     atualizarRequisitoOlt();
+    atualizarRequisitoPppoe(); // Chama a função que atualiza o requisito do PPPoE
     appAside.style.display = 'none';
 });
