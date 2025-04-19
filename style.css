@@ -336,8 +336,8 @@ textarea.form-control {
 #scrollToBottomBtn {
     /* Posicionamento Fixo */
     position: fixed;
-    bottom: 35px; /* Distância do fundo */
-    right: 20px; /* Distância da direita */
+    bottom: 45px; /* Distância do fundo */
+    right: 22px; /* Distância da direita */
     z-index: 999; /* Garante que fique acima de outros elementos */
   
     /* Aparência */
