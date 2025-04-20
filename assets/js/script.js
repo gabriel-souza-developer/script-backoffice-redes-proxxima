@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const tentouPeloAnielSelect = document.getElementById('tentouPeloAniel');
     const quantidadePortasCtoContainer = document.getElementById('quantidadePortasCtoContainer');
     const quantidadePortasCtoSelect = document.getElementById('quantidadePortasCto');
-    const verificarCtoRadio = document.getElementById('verificarCto');
+    const verificarCtoRadio = document.getElementById('verificarCto'); // Gatilho 1 para Aniel
+    const verificarConexaoRadio = document.getElementById('verificarConexao'); // <<< NOVO: Gatilho 2 para Aniel
     const appAside = document.querySelector('.app-aside');
     const vlanInput = document.getElementById('vlan');
     const serialOnuAntigaInput = document.getElementById('serialOnuAntiga');
@@ -77,11 +78,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         htmlLines.push(`<strong>INFORMAÇÕES DO CLIENTE:</strong>`);
         htmlLines.push('<br>');
-        htmlLines.push(`Protocolo: ${protocolo}`);
+        if (protocolo) {
+            htmlLines.push(`Protocolo: ${protocolo}`);
+        }
         if (pppoe) {
             htmlLines.push(`PPPoE: ${pppoe}`);
         }
-        htmlLines.push('<br>');
+        if (protocolo || pppoe) {
+             htmlLines.push('<br>');
+        }
 
         htmlLines.push(`<strong>TIPO DE ATENDIMENTO:</strong> ${tipoServico}`);
         htmlLines.push('<br>');
@@ -105,8 +110,10 @@ document.addEventListener('DOMContentLoaded', function () {
             htmlLines.push('<br>');
         }
 
-        if (tentouPeloAniel || !verificarCtoRadio.checked) {
-            htmlLines.push(`<strong>TENTOU PELO ANIEL:</strong> ${tentouPeloAniel || 'Não aplicável/informado'}`);
+        // <<< MODIFICADO AQUI: Mostra Aniel se preenchido OU se não for CTO nem Conexão (ou seja, se era obrigatório)
+        const anielEraObrigatorio = !verificarCtoRadio.checked && !verificarConexaoRadio.checked;
+        if (tentouPeloAniel || anielEraObrigatorio) {
+            htmlLines.push(`<strong>TENTOU PELO ANIEL:</strong> ${tentouPeloAniel || 'Não informado'}`); // Mostra 'Não informado' se era obrigatório e não preencheu
         }
 
         return htmlLines.join('<br>').replace(/^(<br>)+|(<br>)+$/g, '').replace(/(<br>\s*){3,}/g, '<br><br>');
@@ -128,11 +135,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         markdownLines.push(`*INFORMAÇÕES DO CLIENTE:*`);
         markdownLines.push('');
-        markdownLines.push(`Protocolo: ${protocolo}`);
+        if (protocolo) {
+            markdownLines.push(`Protocolo: ${protocolo}`);
+        }
         if (pppoe) {
             markdownLines.push(`PPPoE: ${pppoe}`);
         }
-        markdownLines.push('');
+        if (protocolo || pppoe) {
+            markdownLines.push('');
+        }
 
         markdownLines.push(`*TIPO DE ATENDIMENTO:* ${tipoServico}`);
         markdownLines.push('');
@@ -157,8 +168,10 @@ document.addEventListener('DOMContentLoaded', function () {
             markdownLines.push('');
         }
 
-        if (tentouPeloAniel || !verificarCtoRadio.checked) {
-            markdownLines.push(`*TENTOU PELO ANIEL:* ${tentouPeloAniel || 'Não aplicável/informado'}`);
+        // <<< MODIFICADO AQUI: Mostra Aniel se preenchido OU se não for CTO nem Conexão (ou seja, se era obrigatório)
+        const anielEraObrigatorio = !verificarCtoRadio.checked && !verificarConexaoRadio.checked;
+        if (tentouPeloAniel || anielEraObrigatorio) {
+             markdownLines.push(`*TENTOU PELO ANIEL:* ${tentouPeloAniel || 'Não informado'}`);
         }
 
         return markdownLines.join('\n').trim();
@@ -211,10 +224,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // <<< FUNÇÃO MODIFICADA AQUI >>>
     function atualizarRequisitoAniel() {
-        if (!verificarCtoRadio || !tentouPeloAnielSelect) return;
-        const ehObrigatorio = !verificarCtoRadio.checked;
+        // Garante que os elementos necessários existem
+        if (!verificarCtoRadio || !verificarConexaoRadio || !tentouPeloAnielSelect) return;
+
+        // Aniel é obrigatório, *exceto* quando "Verificar CTO" OU "Verificar Conexão" está selecionado.
+        const ehObrigatorio = !verificarCtoRadio.checked && !verificarConexaoRadio.checked;
         tentouPeloAnielSelect.required = ehObrigatorio;
+
+        // Limpa a validação customizada se o campo deixar de ser obrigatório
         if (!ehObrigatorio) {
             tentouPeloAnielSelect.setCustomValidity('');
         }
@@ -242,58 +261,31 @@ document.addEventListener('DOMContentLoaded', function () {
     botaoGerarCopiar.addEventListener('click', function () {
         // Passo 1: Validar o Formulário
         if (!form.checkValidity()) {
-            // Mostra a validação nativa
             form.reportValidity();
-
-            // --- Início: Scroll Manual para Campos Inválidos (Foco em Tipo de Atendimento) ---
             let scrolled = false;
-
-            // Verifica o grupo 'tipoServico' (o primeiro radio tem 'required')
-            const primeiroTipoServico = document.querySelector('input[name="tipoServico"][required]'); // Encontra o radio obrigatório
+            const primeiroTipoServico = document.querySelector('input[name="tipoServico"][required]');
             let algumTipoServicoMarcado = false;
             if (primeiroTipoServico) {
                  document.querySelectorAll('input[name="tipoServico"]').forEach(radio => {
                       if (radio.checked) algumTipoServicoMarcado = true;
                  })
             }
-
-
             if (primeiroTipoServico && !algumTipoServicoMarcado) {
-                // Se nenhum radio do grupo foi marcado, tenta rolar para o título da seção
                 const tipoServicoTitulo = [...document.querySelectorAll('.form__section-title')]
                                           .find(h2 => h2.textContent.trim() === 'Tipo de Atendimento');
-
                 if (tipoServicoTitulo) {
                     tipoServicoTitulo.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     scrolled = true;
                 } else {
-                    // Fallback: rolar para o primeiro radio se o título não for encontrado
                     primeiroTipoServico.scrollIntoView({ behavior: 'smooth', block: 'center' });
                      scrolled = true;
                 }
             }
-
-            // Adicionar aqui verificações para outros campos se necessário (protocolo, pppoe, aniel, olt)
-            // Exemplo:
-            /*
-            const camposObrigatorios = [protocoloInput, pppoeInput, tentouPeloAnielSelect, oltInput]; // Adicione outros conforme a lógica 'required' dinâmica
-            if (!scrolled) {
-                for (const campo of camposObrigatorios) {
-                    // Verifica se o campo existe, é obrigatório no estado atual e está inválido
-                    if (campo && campo.required && !campo.validity.valid) {
-                         campo.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                         scrolled = true;
-                         break; // Rola para o primeiro encontrado e para
-                    }
-                }
-            }
-            */
-            // --- Fim: Scroll Manual ---
-
+            // Adicionar outras verificações de scroll manual aqui se necessário
             mostrarToast("Por favor, preencha todos os campos obrigatórios destacados.");
             appAside.style.display = 'none';
             resumoTexto.innerHTML = '';
-            return; // Interrompe a execução
+            return;
         }
 
         // Passo 2: Gerar os Resumos
@@ -317,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function () {
         radio.addEventListener('change', () => {
             atualizarEstadoCampoOutro();
             atualizarVisibilidadeQuantidadeCto();
-            atualizarRequisitoAniel();
+            atualizarRequisitoAniel(); 
             atualizarRequisitoOlt();
             atualizarRequisitoPppoe();
         });
@@ -326,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Inicialização
     atualizarEstadoCampoOutro();
     atualizarVisibilidadeQuantidadeCto();
-    atualizarRequisitoAniel();
+    atualizarRequisitoAniel(); 
     atualizarRequisitoOlt();
     atualizarRequisitoPppoe();
     appAside.style.display = 'none';
