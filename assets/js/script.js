@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const tentouPeloAnielSelect = document.getElementById('tentouPeloAniel');
     const quantidadePortasCtoContainer = document.getElementById('quantidadePortasCtoContainer');
     const quantidadePortasCtoSelect = document.getElementById('quantidadePortasCto');
-    const verificarCtoRadio = document.getElementById('verificarCto'); // Gatilho 1 para Aniel
-    const verificarConexaoRadio = document.getElementById('verificarConexao'); // <<< NOVO: Gatilho 2 para Aniel
+    const verificarCtoRadio = document.getElementById('verificarCto');
+    const verificarConexaoRadio = document.getElementById('verificarConexao');
     const appAside = document.querySelector('.app-aside');
     const vlanInput = document.getElementById('vlan');
     const serialOnuAntigaInput = document.getElementById('serialOnuAntiga');
@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const pppoeInput = document.getElementById('pppoe');
     const oltInput = document.getElementById('olt');
     const descricaoServicoInput = document.getElementById('descricaoServico');
-
     const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
     const pageFooter = document.querySelector('.app-footer');
 
@@ -43,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // === 2. Funções Auxiliares ===
-
     function getTipoServico() {
         const tipoServicoRadios = document.querySelectorAll('input[name="tipoServico"]');
         let tipoServico = '';
@@ -78,15 +76,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         htmlLines.push(`<strong>INFORMAÇÕES DO CLIENTE:</strong>`);
         htmlLines.push('<br>');
-        if (protocolo) {
-            htmlLines.push(`Protocolo: ${protocolo}`);
-        }
-        if (pppoe) {
-            htmlLines.push(`PPPoE: ${pppoe}`);
-        }
-        if (protocolo || pppoe) {
-             htmlLines.push('<br>');
-        }
+        if (protocolo) htmlLines.push(`Protocolo: ${protocolo}`);
+        if (pppoe) htmlLines.push(`PPPoE: ${pppoe}`);
+        if (protocolo || pppoe) htmlLines.push('<br>');
 
         htmlLines.push(`<strong>TIPO DE ATENDIMENTO:</strong> ${tipoServico}`);
         htmlLines.push('<br>');
@@ -97,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (tipoEquipamento) equipamentoLines.push(`Modo operacional da ONU: ${tipoEquipamento}`);
         if (marcaONU) equipamentoLines.push(`Marca da ONU: ${marcaONU}`);
         if (vlan) equipamentoLines.push(`VLAN preenchida na WAN: ${vlan}`);
-        if (olt) equipamentoLines.push(`Ponto de Acesso - OLT: ${olt}`);
+        if (olt) equipamentoLines.push(`Ponto de Acesso/OLT: ${olt}`);
         if (equipamentoLines.length > 0) {
             htmlLines.push(`<strong>INFO. EQUIPAMENTOS:</strong>`);
             htmlLines.push('<br>');
@@ -110,10 +102,9 @@ document.addEventListener('DOMContentLoaded', function () {
             htmlLines.push('<br>');
         }
 
-        // <<< MODIFICADO AQUI: Mostra Aniel se preenchido OU se não for CTO nem Conexão (ou seja, se era obrigatório)
         const anielEraObrigatorio = !verificarCtoRadio.checked && !verificarConexaoRadio.checked;
         if (tentouPeloAniel || anielEraObrigatorio) {
-            htmlLines.push(`<strong>TENTOU PELO ANIEL:</strong> ${tentouPeloAniel || 'Não informado'}`); // Mostra 'Não informado' se era obrigatório e não preencheu
+            htmlLines.push(`<strong>TENTOU PELO ANIEL:</strong> ${tentouPeloAniel || 'Não informado'}`);
         }
 
         return htmlLines.join('<br>').replace(/^(<br>)+|(<br>)+$/g, '').replace(/(<br>\s*){3,}/g, '<br><br>');
@@ -135,26 +126,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
         markdownLines.push(`*INFORMAÇÕES DO CLIENTE:*`);
         markdownLines.push('');
-        if (protocolo) {
-            markdownLines.push(`Protocolo: ${protocolo}`);
-        }
-        if (pppoe) {
-            markdownLines.push(`PPPoE: ${pppoe}`);
-        }
-        if (protocolo || pppoe) {
-            markdownLines.push('');
-        }
+        if (protocolo) markdownLines.push(`Protocolo: ${protocolo}`);
+        if (pppoe) markdownLines.push(`PPPoE: ${pppoe}`);
+        if (protocolo || pppoe) markdownLines.push('');
 
         markdownLines.push(`*TIPO DE ATENDIMENTO:* ${tipoServico}`);
         markdownLines.push('');
 
         const equipamentoLines = [];
-        if (serialOnuAntigaValor) equipamentoLines.push(`SN equi. ANTIGO: ${serialOnuAntigaValor}`);
-        if (serialOnuNovaValor) equipamentoLines.push(`SN equi. *NOVO/ATUAL:* ${serialOnuNovaValor}`);
+        if (serialOnuAntigaValor) equipamentoLines.push(`SN ANTIGO: ${serialOnuAntigaValor}`);
+        if (serialOnuNovaValor) equipamentoLines.push(`SN *NOVO/ATUAL:* ${serialOnuNovaValor}`);
         if (tipoEquipamento) equipamentoLines.push(`Modo operacional da ONU: ${tipoEquipamento}`);
         if (marcaONU) equipamentoLines.push(`Marca da ONU: ${marcaONU}`);
-        if (vlan) equipamentoLines.push(`VLAN: ${vlan}`);
-        if (olt) equipamentoLines.push(`Ponto de Acesso - OLT: ${olt}`);
+        if (vlan) equipamentoLines.push(`VLAN preenchida na WAN: ${vlan}`);
+        if (olt) equipamentoLines.push(`Ponto de Acesso/OLT: ${olt}`);
         if (equipamentoLines.length > 0) {
             markdownLines.push(`*INFO. EQUIPAMENTOS:*`);
             markdownLines.push('');
@@ -163,12 +148,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (descricaoServico) {
-            markdownLines.push(`*DESCRIÇÃO DETALHADA:*`);
-            markdownLines.push(descricaoServico);
+            markdownLines.push(`*DESCRIÇÃO DETALHADA: *${descricaoServico}`);
             markdownLines.push('');
         }
 
-        // <<< MODIFICADO AQUI: Mostra Aniel se preenchido OU se não for CTO nem Conexão (ou seja, se era obrigatório)
         const anielEraObrigatorio = !verificarCtoRadio.checked && !verificarConexaoRadio.checked;
         if (tentouPeloAniel || anielEraObrigatorio) {
              markdownLines.push(`*TENTOU PELO ANIEL:* ${tentouPeloAniel || 'Não informado'}`);
@@ -224,16 +207,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // <<< FUNÇÃO MODIFICADA AQUI >>>
     function atualizarRequisitoAniel() {
-        // Garante que os elementos necessários existem
         if (!verificarCtoRadio || !verificarConexaoRadio || !tentouPeloAnielSelect) return;
-
-        // Aniel é obrigatório, *exceto* quando "Verificar CTO" OU "Verificar Conexão" está selecionado.
         const ehObrigatorio = !verificarCtoRadio.checked && !verificarConexaoRadio.checked;
         tentouPeloAnielSelect.required = ehObrigatorio;
-
-        // Limpa a validação customizada se o campo deixar de ser obrigatório
         if (!ehObrigatorio) {
             tentouPeloAnielSelect.setCustomValidity('');
         }
@@ -257,9 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // === 3. Event Listeners e Inicialização ===
     botaoGerarCopiar.addEventListener('click', function () {
-        // Passo 1: Validar o Formulário
         if (!form.checkValidity()) {
             form.reportValidity();
             let scrolled = false;
@@ -281,18 +256,15 @@ document.addEventListener('DOMContentLoaded', function () {
                      scrolled = true;
                 }
             }
-            // Adicionar outras verificações de scroll manual aqui se necessário
             mostrarToast("Por favor, preencha todos os campos obrigatórios destacados.");
             appAside.style.display = 'none';
             resumoTexto.innerHTML = '';
             return;
         }
 
-        // Passo 2: Gerar os Resumos
         const textoResumoHTML = gerarTextoResumoHTML();
         const textoResumoMarkdown = gerarTextoResumoMarkdown();
 
-        // Passo 3: Exibir e Copiar
         if (textoResumoHTML) {
             resumoTexto.innerHTML = textoResumoHTML;
             copiarParaAreaTransferencia(textoResumoMarkdown);
@@ -304,7 +276,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Adiciona listeners aos radios tipoServico
     document.querySelectorAll('input[name="tipoServico"]').forEach(radio => {
         radio.addEventListener('change', () => {
             atualizarEstadoCampoOutro();
@@ -315,11 +286,79 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Inicialização
     atualizarEstadoCampoOutro();
     atualizarVisibilidadeQuantidadeCto();
     atualizarRequisitoAniel(); 
     atualizarRequisitoOlt();
     atualizarRequisitoPppoe();
     appAside.style.display = 'none';
+
+    // === 4. Autocomplete OLT ===
+    const opcoesOlt = [
+        "SZA-JDIR-01",
+        "LJD-LJA-01",
+        "SSY-CEN-01",
+        "CZE-HRT-01",
+        "JTU-CEN-01",
+        "BBZ-CEN-01",
+        "TTT-CEN-01",
+        "SKS-CEN-01",
+        "CIC-CEN-01",
+        "JTU-CEN-01",
+        "SXF-CEN-01",
+        "SFA-CEN-01"
+    ];
+
+    const sugestaoContainer = document.createElement('div');
+    sugestaoContainer.classList.add('autocomplete-suggestions');
+    sugestaoContainer.style.position = 'absolute';
+    sugestaoContainer.style.border = '1px solid #ccc';
+    sugestaoContainer.style.background = '#fff';
+    sugestaoContainer.style.zIndex = '1000';
+    sugestaoContainer.style.display = 'none';
+    sugestaoContainer.style.maxHeight = '150px';
+    sugestaoContainer.style.overflowY = 'auto';
+    sugestaoContainer.style.fontSize = '14px';
+    sugestaoContainer.style.width = oltInput.offsetWidth + 'px';
+
+    oltInput.parentNode.style.position = 'relative';
+    oltInput.parentNode.appendChild(sugestaoContainer);
+
+    oltInput.addEventListener('input', () => {
+        const termo = oltInput.value.toLowerCase();
+        sugestaoContainer.innerHTML = '';
+        if (!termo) {
+            sugestaoContainer.style.display = 'none';
+            return;
+        }
+
+        const resultados = opcoesOlt.filter(opcao => opcao.toLowerCase().includes(termo));
+        if (resultados.length === 0) {
+            sugestaoContainer.style.display = 'none';
+            return;
+        }
+
+        resultados.forEach(opcao => {
+            const div = document.createElement('div');
+            div.textContent = opcao;
+            div.style.padding = '6px 10px';
+            div.style.cursor = 'pointer';
+            div.addEventListener('click', () => {
+                oltInput.value = opcao;
+                sugestaoContainer.style.display = 'none';
+            });
+            div.addEventListener('mouseover', () => div.style.background = '#eee');
+            div.addEventListener('mouseout', () => div.style.background = '#fff');
+            sugestaoContainer.appendChild(div);
+        });
+
+        sugestaoContainer.style.display = 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!sugestaoContainer.contains(e.target) && e.target !== oltInput) {
+            sugestaoContainer.style.display = 'none';
+        }
+    });
+
 });
