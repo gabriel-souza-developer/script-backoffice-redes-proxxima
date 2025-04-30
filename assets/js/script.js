@@ -306,7 +306,22 @@ document.addEventListener('DOMContentLoaded', function () {
         "CIC-CEN-01",
         "JTU-CEN-01",
         "SXF-CEN-01",
-        "SFA-CEN-01"
+        "SFA-CEN-01",
+        "MRIZ-STAN-01",
+        "CZS-CEN-01",
+        "JUI-CEN-01",
+        "BJM-OXT-01",
+        "TRU-CEN-01",
+        "PBL-VDNV-01",
+        "SXQ-JSG-01",
+        "MRIZ-STAN-01",
+        "FILADELFIA-DATACOM",
+        "AEI-CEN-01",
+        "GBI-CEN-01",
+        "GBI-CEN-02",
+        "GBI-CEN-03",
+        "AHA-CEN-01"       
+
     ];
 
     const sugestaoContainer = document.createElement('div');
