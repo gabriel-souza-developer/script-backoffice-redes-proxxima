@@ -1,0 +1,406 @@
+/* Cores */
+:root {
+    --primary-color: #2B3591;
+    --primary-color-hover: #20276e; 
+    --secondary-color: #CD2784;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --text-color: #495057;
+    --accent-color: #ffc107;
+    --input-bg-color: #fff;
+    --input-border-color: #ced4da;
+    --form-section-bg: #fdfdfd;
+    --form-section-border: #d0d0d5;
+}
+
+/* Reset */
+body, h1, h2, p, form, section, div {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    box-sizing: border-box;
+}
+
+/* Geral */
+body {
+    font-family: "Gotham", sans-serif;
+    background-color: var(--light-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.app-container {
+    max-width: 650px;
+    margin: 20px auto;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px;
+}
+
+/* Header */
+.app-header {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 15px 15px 0 0;
+    background-image: url("https://proxxima.net/themes/milha-telecom/assets/img/bgs/people-working.jpg");
+    background-size: cover; /* Ajusta a imagem para cobrir todo o cabeçalho */
+    background-position: center; /* Centraliza a imagem */
+    position: relative; /* Cria um contexto para o pseudo-elemento */
+    overflow: hidden; /* Garante que a imagem não vaze para fora do cabeçalho */
+}
+
+/* Adicionando um efeito de sobreposição (overlay) */
+.app-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(43, 53, 145, 0.6); /* Cor primária com alguma transparência */
+    z-index: 1; /* Garante que a sobreposição fique acima da imagem */
+}
+
+.app-header>* {
+    position: relative;
+    z-index: 2; 
+}
+
+.app-header__logo {
+    max-width: 300px;
+    margin-bottom: 10px;
+}
+
+.app-header__logo img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.app-header__title {
+    font-size: 1.4em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.app-header__subtitle {
+    font-size: 0.8em;
+    font-style: italic;
+    color: #eee;
+}
+
+/* Main */
+.app-main {
+    padding: 20px 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os botões */
+}
+
+.form__section {
+    margin-bottom: 20px;
+    border: 1px solid var(--form-section-border);
+    border-radius: 10px;
+    padding: 20px;
+    background-color: var(--form-section-bg);
+    width: 100%;
+}
+
+.form__section-title {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    font-weight: 700;
+    border-bottom: 3px solid var(--secondary-color);
+    padding-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.form-control {
+    width: 100%;
+    border-radius: 5px;
+    padding: 8px;
+    font-size: 0.9em;
+    border: 1px solid var(--input-border-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: var(--input-bg-color);
+    color: var(--text-color);
+}
+
+.form_section-strong {
+    color: var(--primary-color);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 5px rgba(43, 53, 145, 0.3);
+}
+
+.form-check {
+    margin-bottom: 10px;
+}
+
+/* Container para os botões */
+.form__buttons-container {
+    width: 100%; 
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    margin-top: 10px; 
+}
+
+.form__submit-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color: var(--secondary-color);
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin: 5px 0; /* Adicionei margem superior e inferior */
+}
+
+.form__submit-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    color: #fff;
+}
+
+.form__submit-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(205, 39, 132, 0.5); /* Cor da borda de foco */
+}
+
+.form__cliq-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    background-color: var(--primary-color);
+    color: #fff;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    text-align: center;
+    margin: 5px 0; /* Adicionei margem superior e inferior */
+}
+
+.form__cliq-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+    color: #fff;
+}
+
+.form__observacao {
+    font-size: 0.8em;
+    font-style: italic;
+    color: var(--primary-color);
+    margin-top: 3px;
+}
+
+/* Aside */
+.app-aside {
+    border-top: none;
+    border-left: none;
+    display: none;
+    border-radius: 0 0 15px 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.app-aside__title {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.4em;
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.app-aside__content {
+    overflow: auto;
+}
+
+.app-aside__text {
+    font-family: "Gotham", sans-serif;
+    white-space: pre-wrap; /* Mantém as quebras de linha corretas */
+    word-wrap: break-word; 
+    font-size: 1em;
+    padding: 17px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    line-height: 1.5;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#tentouPeloAnielHelp {
+    margin-top: .60rem;
+}
+
+/* Footer */
+.app-footer {
+    text-align: center;
+    padding: 10px;
+    background-color: var(--dark-color);
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 0 0 15px 15px;
+    width: 100%;
+}
+
+.app-footer__github-link {
+    color: #fff; 
+    text-decoration: none; 
+    margin-left: 5px;
+    transition: color 0.3s ease; /* Adiciona uma transição suave na cor */
+}
+
+.app-footer__github-link:hover {
+    color: var(--secondary-color); /* Altera a cor ao passar o mouse */
+}
+
+.toast {
+    background-color: green;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 12px;
+    max-width: 100%;
+    opacity: 0;
+    transition: opacity 0s ease;
+    display: inline-block;
+}
+
+.toast.show {
+    opacity: 1;
+    text-align: center;
+    
+}
+
+.toast.hidden {
+    display: none;
+    text-align: center;
+    max-width: 100%;
+}
+
+/* Estilos para o Botão de Rolar para o Fim */
+#scrollToBottomBtn {
+    /* Posicionamento Fixo */
+    position: fixed;
+    bottom: 35px !important; /* Distância do fundo */
+    right: 22px; /* Distância da direita */
+    z-index: 999; /* Garante que fique acima de outros elementos */
+  
+    /* Aparência */
+    background-color: var(--primary-color);
+    color: white; 
+    border: none;
+    border-radius: 50%; /* Deixa o botão redondo */
+    width: 50px; 
+    height: 50px; 
+    font-size: 20px; 
+    cursor: pointer;
+    display: flex; /* Para centralizar o ícone */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.281); /* Sombra sutil (opcional) */
+    transition: background-color 0.3s ease, opacity 0.3s ease, visibility 0.3s ease; /* Transição suave */
+  
+    /* Inicialmente oculto (opcional, veja JS) */
+     opacity: 0;
+     visibility: hidden;
+  }
+  
+  #scrollToBottomBtn:hover {
+    background-color: var(--primary-color-hover);
+  }
+  
+  /* Classe para mostrar o botão quando ativo */
+  #scrollToBottomBtn.visible {
+      opacity: 1;
+      visibility: visible;
+  }
+
+
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+    .app-container {
+        max-width: 600;
+        padding: 27px;
+    }
+
+    .app-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .app-main {
+        max-width: 600px;
+    }
+    .app-aside__title {
+        font-size: 1.2em;
+    }
+
+    .app-aside {
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .form__section-title {
+        font-size: 1.2rem;
+    }
+
+    .form__observacao {
+        padding: 5px;
+    }
+}
