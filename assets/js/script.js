@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (descricaoServico) {
-      markdownLines.push(`*DESCRIÇÃO DETALHADA: *${descricaoServico}`);
+      markdownLines.push(`*DESCRIÇÃO DETALHADA:* ${descricaoServico}`);
       markdownLines.push("");
     }
 
@@ -390,6 +390,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "CGE-SJMT",
     "CGE-ALU-01",
     "CGE-SJMT-02",
+    "JMH-CEN-01"
     
   ];
 
