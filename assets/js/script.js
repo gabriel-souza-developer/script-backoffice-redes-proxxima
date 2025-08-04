@@ -1,199 +1,134 @@
 document.addEventListener("DOMContentLoaded", function () {
   // === 1. Elementos do DOM ===
-  const form = document.getElementById("formularioResumo");
-  const botaoGerarCopiar = document.getElementById("gerarCopiarResumo");
-  const resumoTexto = document.getElementById("resumoTexto");
-  const outroTipoServicoRadio = document.getElementById("outro");
-  const outroTipoServicoInput = document.getElementById("outroTipoServico");
-  const tipoEquipamentoSelect = document.getElementById("tipoEquipamento");
-  const marcaONUSelect = document.getElementById("marcaONU");
-  const tentouPeloAnielSelect = document.getElementById("tentouPeloAniel");
-  const quantidadePortasCtoContainer = document.getElementById(
-    "quantidadePortasCtoContainer"
-  );
-  const quantidadePortasCtoSelect = document.getElementById(
-    "quantidadePortasCto"
-  );
-  const verificarCtoRadio = document.getElementById("verificarCto");
-  const verificarConexaoRadio = document.getElementById("verificarConexao");
-  const appAside = document.querySelector(".app-aside");
-  const vlanInput = document.getElementById("vlan");
-  const serialOnuAntigaInput = document.getElementById("serialOnuAntiga");
-  const serialOnuNovaInput = document.getElementById("serialOnuNova");
-  const protocoloInput = document.getElementById("protocolo");
-  const pppoeInput = document.getElementById("pppoe");
-  const oltInput = document.getElementById("olt");
-  const descricaoServicoInput = document.getElementById("descricaoServico");
-  const scrollToBottomBtn = document.getElementById("scrollToBottomBtn");
-  const pageFooter = document.querySelector(".app-footer");
+  const dom = {
+    form: document.getElementById("formularioResumo"),
+    botaoGerarCopiar: document.getElementById("gerarCopiarResumo"),
+    resumoTexto: document.getElementById("resumoTexto"),
+    outroTipoServicoRadio: document.getElementById("outro"),
+    outroTipoServicoInput: document.getElementById("outroTipoServico"),
+    tipoEquipamentoSelect: document.getElementById("tipoEquipamento"),
+    marcaONUSelect: document.getElementById("marcaONU"),
+    tentouPeloAnielSelect: document.getElementById("tentouPeloAniel"),
+    quantidadePortasCtoContainer: document.getElementById(
+      "quantidadePortasCtoContainer"
+    ),
+    quantidadePortasCtoSelect: document.getElementById("quantidadePortasCto"),
+    verificarCtoRadio: document.getElementById("verificarCto"),
+    verificarConexaoRadio: document.getElementById("verificarConexao"),
+    appAside: document.querySelector(".app-aside"),
+    vlanInput: document.getElementById("vlan"),
+    serialOnuAntigaInput: document.getElementById("serialOnuAntiga"),
+    serialOnuNovaInput: document.getElementById("serialOnuNova"),
+    protocoloInput: document.getElementById("protocolo"),
+    pppoeInput: document.getElementById("pppoe"),
+    oltInput: document.getElementById("olt"),
+    descricaoServicoInput: document.getElementById("descricaoServico"),
+    scrollToBottomBtn: document.getElementById("scrollToBottomBtn"),
+    pageFooter: document.querySelector(".app-footer"),
+  };
 
-  if (scrollToBottomBtn && pageFooter) {
-    const checkScrollPosition = () => {
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = document.documentElement.clientHeight;
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      if (scrollTop > 50 && scrollTop + clientHeight < scrollHeight - 50) {
-        scrollToBottomBtn.classList.add("visible");
-      } else {
-        scrollToBottomBtn.classList.remove("visible");
-      }
-    };
-    window.addEventListener("scroll", checkScrollPosition);
-    checkScrollPosition();
-    scrollToBottomBtn.addEventListener("click", () => {
-      pageFooter.scrollIntoView({ behavior: "smooth", block: "end" });
-    });
-  }
+  // === 2. Funções utilitárias ===
 
-  // === 2. Funções Auxiliares ===
-  function getTipoServico() {
-    const tipoServicoRadios = document.querySelectorAll(
-      'input[name="tipoServico"]'
-    );
-    let tipoServico = "";
-    for (const radio of tipoServicoRadios) {
+  const getTipoServico = () => {
+    const radios = document.querySelectorAll('input[name="tipoServico"]');
+    for (const radio of radios) {
       if (radio.checked) {
-        tipoServico =
+        let tipo =
           radio.id === "outro"
-            ? outroTipoServicoInput.value.trim()
+            ? dom.outroTipoServicoInput.value.trim()
             : radio.value;
-        break;
+        if (
+          dom.verificarCtoRadio.checked &&
+          dom.quantidadePortasCtoSelect.value
+        ) {
+          tipo += ` (Portas: ${dom.quantidadePortasCtoSelect.value.trim()})`;
+        }
+        return tipo;
       }
     }
-    if (verificarCtoRadio.checked) {
-      const quantidadePortasCto = quantidadePortasCtoSelect.value.trim();
-      if (quantidadePortasCto) {
-        tipoServico += ` (Portas: ${quantidadePortasCto})`;
-      }
-    }
-    return tipoServico;
-  }
+    return "";
+  };
 
-  function gerarTextoResumoHTML() {
-    const htmlLines = [];
+  const gerarTextoResumo = (formato = "html") => {
+    const isHTML = formato === "html";
+    const br = isHTML ? "<br>" : "";
+    const bold = (text) => (isHTML ? `<strong>${text}</strong>` : `*${text}*`);
+    const novaLinha = isHTML ? "<br>" : "\n";
+    const linhas = [];
+    const add = (linha = "") => linhas.push(linha + novaLinha);
+
+    const {
+      protocoloInput,
+      pppoeInput,
+      serialOnuAntigaInput,
+      serialOnuNovaInput,
+      tipoEquipamentoSelect,
+      marcaONUSelect,
+      vlanInput,
+      oltInput,
+      descricaoServicoInput,
+      tentouPeloAnielSelect,
+    } = dom;
+
     const protocolo = protocoloInput.value.trim();
     const pppoe = pppoeInput.value.trim();
-    let tipoServico = getTipoServico();
-    const tentouPeloAniel = tentouPeloAnielSelect.value.trim();
-    const serialOnuAntigaValor = serialOnuAntigaInput.value.trim();
-    const serialOnuNovaValor = serialOnuNovaInput.value.trim();
+    const tipoServico = getTipoServico();
+    const serialAntiga = serialOnuAntigaInput.value.trim();
+    const serialNova = serialOnuNovaInput.value.trim();
     const tipoEquipamento = tipoEquipamentoSelect.value.trim();
     const marcaONU = marcaONUSelect.value.trim();
     const vlan = vlanInput.value.trim();
     const olt = oltInput.value.trim();
-    const descricaoServico = descricaoServicoInput.value.trim();
+    const descricao = descricaoServicoInput.value.trim();
+    const tentouAniel = tentouPeloAnielSelect.value.trim();
+    const anielObrigatorio = !["Verificar CTO - Caixa de Terminação Óptica", "Análise de conexão", "Solicitação de atribuição de IP", "Redirecionamento de portas", "Plano contratado x plano entregue", "Dificuldades de acesso"].includes(tipoServico);
 
-    htmlLines.push(`<strong>INFORMAÇÕES DO CLIENTE:</strong>`);
-    htmlLines.push("<br>");
-    if (protocolo) htmlLines.push(`Protocolo: ${protocolo}`);
-    if (pppoe) htmlLines.push(`PPPoE: ${pppoe}`);
-    if (protocolo || pppoe) htmlLines.push("<br>");
+    // Cliente
+    add(bold("INFORMAÇÕES DO CLIENTE:"));
+    add("");
+    if (protocolo) add(`Protocolo: ${protocolo}`);
+    if (pppoe) add(`PPPoE: ${pppoe}`);
+    add("");
 
-    htmlLines.push(`<strong>TIPO DE ATENDIMENTO:</strong> ${tipoServico}`);
-    htmlLines.push("<br>");
+    // Atendimento
+    add(`${bold("TIPO DE ATENDIMENTO:")} ${tipoServico}`);
+    add("");
 
-    const equipamentoLines = [];
-    if (serialOnuAntigaValor)
-      equipamentoLines.push(`SN equi. ANTIGO: ${serialOnuAntigaValor}`);
-    if (serialOnuNovaValor)
-      equipamentoLines.push(
-        `SN equi. <strong>NOVO/ATUAL: ${serialOnuNovaValor}</strong>`
-      );
+    // Equipamentos
+    const equipamentos = [];
+    if (serialAntiga) equipamentos.push(`SN EQUIP. ANTIGO: ${serialAntiga}`);
+    if (serialNova)
+      equipamentos.push(bold(`SN EQUIP. NOVO/ATUAL: ${serialNova}`));
     if (tipoEquipamento)
-      equipamentoLines.push(`Modo OP. da ONU: ${tipoEquipamento}`);
-    if (marcaONU) equipamentoLines.push(`Marca da ONU: ${marcaONU}`);
-    if (vlan) equipamentoLines.push(`VLAN na WAN: ${vlan}`);
-    if (olt) equipamentoLines.push(`Ponto de acesso: ${olt}`);
-    if (equipamentoLines.length > 0) {
-      htmlLines.push(`<strong>INFO. EQUIPAMENTOS:</strong>`);
-      htmlLines.push("<br>");
-      htmlLines.push(...equipamentoLines);
-      htmlLines.push("<br>");
+      equipamentos.push(`Modo OP. da ONU: ${tipoEquipamento}`);
+    if (marcaONU) equipamentos.push(`Marca da ONU: ${marcaONU}`);
+    if (vlan) equipamentos.push(`VLAN na WAN: ${bold(vlan)}`);
+    if (olt) equipamentos.push(`Ponto de acesso: ${bold(olt)}`);
+
+    if (equipamentos.length > 0) {
+      add(bold("INFO. EQUIPAMENTOS:"));
+      add("");
+      equipamentos.forEach((l) => add(l));
+      add("");
     }
 
-    if (descricaoServico) {
-      htmlLines.push(
-        `<strong>DESCRIÇÃO DETALHADA:</strong> ${descricaoServico.replace(
-          /\n/g,
-          "<br>"
-        )}`
-      );
-      htmlLines.push("<br>");
+    // Descrição
+    if (descricao) {
+      const texto =
+        formato === "html" ? descricao.replace(/\n/g, "<br>") : descricao;
+      add(`${bold("DESCRIÇÃO DETALHADA:")} ${texto}`);
+      add("");
     }
 
-    const anielEraObrigatorio =
-      !verificarCtoRadio.checked && !verificarConexaoRadio.checked;
-    if (tentouPeloAniel || anielEraObrigatorio) {
-      htmlLines.push(
-        `<strong>TENTOU PELO ANIEL:</strong> ${
-          tentouPeloAniel || "Não informado"
-        }`
-      );
+    // Aniel
+    if (tentouAniel || anielObrigatorio) {
+      add(`${bold("TENTOU PELO ANIEL:")} ${tentouAniel || "Não informado"}`);
     }
 
-    return htmlLines
-      .join("<br>")
-      .replace(/^(<br>)+|(<br>)+$/g, "")
-      .replace(/(<br>\s*){3,}/g, "<br><br>");
-  }
+    return linhas.join("").trim();
+  };
 
-  function gerarTextoResumoMarkdown() {
-    const markdownLines = [];
-    const protocolo = protocoloInput.value.trim();
-    const pppoe = pppoeInput.value.trim();
-    let tipoServico = getTipoServico();
-    const tentouPeloAniel = tentouPeloAnielSelect.value.trim();
-    const serialOnuAntigaValor = serialOnuAntigaInput.value.trim();
-    const serialOnuNovaValor = serialOnuNovaInput.value.trim();
-    const tipoEquipamento = tipoEquipamentoSelect.value.trim();
-    const marcaONU = marcaONUSelect.value.trim();
-    const vlan = vlanInput.value.trim();
-    const olt = oltInput.value.trim();
-    const descricaoServico = descricaoServicoInput.value.trim();
-
-    markdownLines.push(`*INFORMAÇÕES DO CLIENTE:*`);
-    markdownLines.push("");
-    if (protocolo) markdownLines.push(`Protocolo: ${protocolo}`);
-    if (pppoe) markdownLines.push(`PPPoE: ${pppoe}`);
-    if (protocolo || pppoe) markdownLines.push("");
-
-    markdownLines.push(`*TIPO DE ATENDIMENTO:* ${tipoServico}`);
-    markdownLines.push("");
-
-    const equipamentoLines = [];
-    if (serialOnuAntigaValor)
-      equipamentoLines.push(`SN ANTIGO: ${serialOnuAntigaValor}`);
-    if (serialOnuNovaValor)
-      equipamentoLines.push(`SN *NOVO/ATUAL: ${serialOnuNovaValor}*`);
-    if (tipoEquipamento)
-      equipamentoLines.push(`Modo OP. da ONU: ${tipoEquipamento}`);
-    if (marcaONU) equipamentoLines.push(`Marca da ONU: ${marcaONU}`);
-    if (vlan) equipamentoLines.push(`VLAN na WAN: *${vlan}*`);
-    if (olt) equipamentoLines.push(`Ponto de acesso: *${olt}*`);
-    if (equipamentoLines.length > 0) {
-      markdownLines.push(`*INFO. EQUIPAMENTOS:*`);
-      markdownLines.push("");
-      markdownLines.push(...equipamentoLines);
-      markdownLines.push("");
-    }
-
-    if (descricaoServico) {
-      markdownLines.push(`*DESCRIÇÃO DETALHADA:* ${descricaoServico}`);
-      markdownLines.push("");
-    }
-
-    const anielEraObrigatorio =
-      !verificarCtoRadio.checked && !verificarConexaoRadio.checked;
-    if (tentouPeloAniel || anielEraObrigatorio) {
-      markdownLines.push(
-        `*TENTOU PELO ANIEL:* ${tentouPeloAniel || "Não informado"}`
-      );
-    }
-
-    return markdownLines.join("\n").trim();
-  }
-
-  function mostrarToast(mensagem) {
+  const mostrarToast = (mensagem) => {
     const toast = document.getElementById("toast");
     if (!toast) return;
     toast.textContent = mensagem;
@@ -201,11 +136,11 @@ document.addEventListener("DOMContentLoaded", function () {
     toast.classList.add("show");
     setTimeout(() => {
       toast.classList.remove("show");
-      setTimeout(() => toast.classList.add("hidden"), 300);
+      toast.classList.add("hidden");
     }, 3000);
-  }
+  };
 
-  function copiarParaAreaTransferencia(texto) {
+  const copiarParaClipboard = (texto) => {
     if (!texto) {
       mostrarToast("Nenhuma informação para copiar.");
       return;
@@ -213,144 +148,104 @@ document.addEventListener("DOMContentLoaded", function () {
     navigator.clipboard
       .writeText(texto)
       .then(() => mostrarToast("Resumo copiado para a área de transferência!"))
-      .catch((err) => {
-        console.error("Erro ao copiar: ", err);
-        mostrarToast(
-          "Falha ao copiar. Verifique as permissões ou copie manualmente."
-        );
-      });
-  }
+      .catch(() => mostrarToast("Erro ao copiar. Copie manualmente."));
+  };
 
-  function atualizarEstadoCampoOutro() {
-    if (!outroTipoServicoRadio || !outroTipoServicoInput) return;
-    const habilitar = outroTipoServicoRadio.checked;
-    outroTipoServicoInput.disabled = !habilitar;
-    outroTipoServicoInput.required = habilitar;
-    if (!habilitar) {
-      outroTipoServicoInput.value = "";
-      outroTipoServicoInput.setCustomValidity("");
-    }
-  }
+  // === 3. Atualizações dinâmicas ===
 
-  function atualizarVisibilidadeQuantidadeCto() {
-    if (
-      !verificarCtoRadio ||
-      !quantidadePortasCtoContainer ||
-      !quantidadePortasCtoSelect
-    )
-      return;
-    const mostrar = verificarCtoRadio.checked;
-    quantidadePortasCtoContainer.style.display = mostrar ? "block" : "none";
-    quantidadePortasCtoSelect.required = mostrar;
-    if (!mostrar) {
-      quantidadePortasCtoSelect.value = "";
-      quantidadePortasCtoSelect.setCustomValidity("");
-    }
-  }
+  const atualizarCampoOutro = () => {
+    const ativo = dom.outroTipoServicoRadio.checked;
+    dom.outroTipoServicoInput.disabled = !ativo;
+    dom.outroTipoServicoInput.required = ativo;
+    if (!ativo) dom.outroTipoServicoInput.value = "";
+  };
 
-  function atualizarRequisitoAniel() {
-    if (!verificarCtoRadio || !verificarConexaoRadio || !tentouPeloAnielSelect)
-      return;
-    const ehObrigatorio =
-      !verificarCtoRadio.checked && !verificarConexaoRadio.checked;
-    tentouPeloAnielSelect.required = ehObrigatorio;
-    if (!ehObrigatorio) {
-      tentouPeloAnielSelect.setCustomValidity("");
-    }
-  }
+  const atualizarQuantidadeCto = () => {
+    const mostrar = dom.verificarCtoRadio.checked;
+    dom.quantidadePortasCtoContainer.style.display = mostrar ? "block" : "none";
+    dom.quantidadePortasCtoSelect.required = mostrar;
+    if (!mostrar) dom.quantidadePortasCtoSelect.value = "";
+  };
 
-  function atualizarRequisitoOlt() {
-    if (!verificarCtoRadio || !oltInput) return;
-    const ehObrigatorio = verificarCtoRadio.checked;
-    oltInput.required = ehObrigatorio;
-    if (!ehObrigatorio) {
-      oltInput.setCustomValidity("");
-    }
-  }
+  const atualizarObrigatorios = () => {
+    dom.tentouPeloAnielSelect.required = false;
+    dom.oltInput.required = dom.verificarCtoRadio.checked;
+    dom.pppoeInput.required = !dom.verificarCtoRadio.checked;
+  };
 
-  function atualizarRequisitoPppoe() {
-    if (!verificarCtoRadio || !pppoeInput) return;
-    const ehObrigatorio = !verificarCtoRadio.checked;
-    pppoeInput.required = ehObrigatorio;
-    if (!ehObrigatorio) {
-      pppoeInput.setCustomValidity("");
-    }
-  }
+  // === 4. Botão de gerar e copiar ===
 
-  botaoGerarCopiar.addEventListener("click", function () {
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      let scrolled = false;
-      const primeiroTipoServico = document.querySelector(
-        'input[name="tipoServico"][required]'
-      );
-      let algumTipoServicoMarcado = false;
-      if (primeiroTipoServico) {
-        document
-          .querySelectorAll('input[name="tipoServico"]')
-          .forEach((radio) => {
-            if (radio.checked) algumTipoServicoMarcado = true;
-          });
-      }
-      if (primeiroTipoServico && !algumTipoServicoMarcado) {
-        const tipoServicoTitulo = [
+  dom.botaoGerarCopiar.addEventListener("click", () => {
+    if (!dom.form.checkValidity()) {
+      dom.form.reportValidity();
+
+      const algumMarcado = [
+        ...document.querySelectorAll('input[name="tipoServico"]'),
+      ].some((r) => r.checked);
+      if (!algumMarcado) {
+        const titulo = [
           ...document.querySelectorAll(".form__section-title"),
-        ].find((h2) => h2.textContent.trim() === "Tipo de Atendimento");
-        if (tipoServicoTitulo) {
-          tipoServicoTitulo.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-          scrolled = true;
-        } else {
-          primeiroTipoServico.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-          scrolled = true;
-        }
+        ].find((el) => el.textContent.includes("Tipo de Atendimento"));
+        (titulo || dom.form).scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
       }
+
       mostrarToast(
         "Por favor, preencha todos os campos obrigatórios destacados."
       );
-      appAside.style.display = "none";
-      resumoTexto.innerHTML = "";
+      dom.appAside.style.display = "none";
+      dom.resumoTexto.innerHTML = "";
       return;
     }
 
-    const textoResumoHTML = gerarTextoResumoHTML();
-    const textoResumoMarkdown = gerarTextoResumoMarkdown();
+    const resumoHTML = gerarTextoResumo("html");
+    const resumoMarkdown = gerarTextoResumo("markdown");
 
-    if (textoResumoHTML) {
-      resumoTexto.innerHTML = textoResumoHTML;
-      copiarParaAreaTransferencia(textoResumoMarkdown);
-      appAside.style.display = "block";
+    if (resumoHTML) {
+      dom.resumoTexto.innerHTML = resumoHTML;
+      copiarParaClipboard(resumoMarkdown);
+      dom.appAside.style.display = "block";
     } else {
-      resumoTexto.innerHTML =
-        "<em>Erro ao gerar resumo. Verifique os campos.</em>";
-      appAside.style.display = "block";
+      dom.resumoTexto.innerHTML = "<em>Erro ao gerar resumo.</em>";
+      dom.appAside.style.display = "block";
       mostrarToast("Erro ao gerar resumo.");
     }
   });
 
-  document.querySelectorAll('input[name="tipoServico"]').forEach((radio) => {
+  // === 5. Eventos dinâmicos ===
+
+  document.querySelectorAll('input[name="tipoServico"]').forEach((radio) =>
     radio.addEventListener("change", () => {
-      atualizarEstadoCampoOutro();
-      atualizarVisibilidadeQuantidadeCto();
-      atualizarRequisitoAniel();
-      atualizarRequisitoOlt();
-      atualizarRequisitoPppoe();
+      atualizarCampoOutro();
+      atualizarQuantidadeCto();
+      atualizarObrigatorios();
+    })
+  );
+
+  atualizarCampoOutro();
+  atualizarQuantidadeCto();
+  atualizarObrigatorios();
+  dom.appAside.style.display = "none";
+
+  // === 6. Botão scroll para o final ===
+  if (dom.scrollToBottomBtn && dom.pageFooter) {
+    const atualizarVisibilidade = () => {
+      const { scrollTop, scrollHeight, clientHeight } =
+        document.documentElement;
+      const mostrar =
+        scrollTop > 50 && scrollTop + clientHeight < scrollHeight - 50;
+      dom.scrollToBottomBtn.classList.toggle("visible", mostrar);
+    };
+    window.addEventListener("scroll", atualizarVisibilidade);
+    dom.scrollToBottomBtn.addEventListener("click", () => {
+      dom.pageFooter.scrollIntoView({ behavior: "smooth" });
     });
-  });
+    atualizarVisibilidade();
+  }
 
-  atualizarEstadoCampoOutro();
-  atualizarVisibilidadeQuantidadeCto();
-  atualizarRequisitoAniel();
-  atualizarRequisitoOlt();
-  atualizarRequisitoPppoe();
-  appAside.style.display = "none";
-
-  // === 4. Autocomplete OLT ===
+  // === 7. Autocomplete OLT ===
   const opcoesOlt = [
     "SZA-JDIR-01",
     "LJD-LJA-01",
@@ -389,38 +284,41 @@ document.addEventListener("DOMContentLoaded", function () {
     "CGE-SAC-01",
     "CGE-SJMT",
     "CGE-ALU-01",
-    "CGE-SJMT-02",
-    "JMH-CEN-01"
-    
+    "CGE-SJMT-CPA-01",
+    "JMH-CEN-01",
+    "CGE-SJMT-CEN-01",
+    "SUN-CEN-01",
+    "CGE-HRO-01",
+    "PHS-CEN-01",
+    "PRH-CEN-01",
+    "CUO-CEN-01",
   ];
 
   const sugestaoContainer = document.createElement("div");
-  sugestaoContainer.classList.add("autocomplete-suggestions");
-  sugestaoContainer.style.position = "absolute";
-  sugestaoContainer.style.border = "1px solid #ccc";
-  sugestaoContainer.style.background = "#fff";
-  sugestaoContainer.style.zIndex = "1000";
-  sugestaoContainer.style.display = "none";
-  sugestaoContainer.style.maxHeight = "150px";
-  sugestaoContainer.style.overflowY = "auto";
-  sugestaoContainer.style.fontSize = "14px";
-  sugestaoContainer.style.width = oltInput.offsetWidth + "px";
+  sugestaoContainer.className = "autocomplete-suggestions";
+  Object.assign(sugestaoContainer.style, {
+    position: "absolute",
+    border: "1px solid #ccc",
+    background: "#fff",
+    zIndex: "1000",
+    display: "none",
+    maxHeight: "150px",
+    overflowY: "auto",
+    fontSize: "14px",
+    width: dom.oltInput.offsetWidth + "px",
+  });
 
-  oltInput.parentNode.style.position = "relative";
-  oltInput.parentNode.appendChild(sugestaoContainer);
+  dom.oltInput.parentNode.style.position = "relative";
+  dom.oltInput.parentNode.appendChild(sugestaoContainer);
 
-  oltInput.addEventListener("input", () => {
-    const termo = oltInput.value.toLowerCase();
+  dom.oltInput.addEventListener("input", () => {
+    const termo = dom.oltInput.value.toLowerCase();
     sugestaoContainer.innerHTML = "";
-    if (!termo) {
-      sugestaoContainer.style.display = "none";
-      return;
-    }
 
-    const resultados = opcoesOlt.filter((opcao) =>
-      opcao.toLowerCase().includes(termo)
+    const resultados = opcoesOlt.filter((op) =>
+      op.toLowerCase().includes(termo)
     );
-    if (resultados.length === 0) {
+    if (!termo || resultados.length === 0) {
       sugestaoContainer.style.display = "none";
       return;
     }
@@ -428,10 +326,12 @@ document.addEventListener("DOMContentLoaded", function () {
     resultados.forEach((opcao) => {
       const div = document.createElement("div");
       div.textContent = opcao;
-      div.style.padding = "6px 10px";
-      div.style.cursor = "pointer";
+      Object.assign(div.style, {
+        padding: "6px 10px",
+        cursor: "pointer",
+      });
       div.addEventListener("click", () => {
-        oltInput.value = opcao;
+        dom.oltInput.value = opcao;
         sugestaoContainer.style.display = "none";
       });
       div.addEventListener("mouseover", () => (div.style.background = "#eee"));
@@ -443,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.addEventListener("click", (e) => {
-    if (!sugestaoContainer.contains(e.target) && e.target !== oltInput) {
+    if (!sugestaoContainer.contains(e.target) && e.target !== dom.oltInput) {
       sugestaoContainer.style.display = "none";
     }
   });
