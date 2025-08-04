@@ -1,53 +1,87 @@
-# Verificar CTOs
+<p align="center">
+  <a href="#projeto">Projeto</a>   |   
+  <a href="#funcionalidades">Funcionalidades</a>   |   
+  <a href="#layout">Layout</a>   |   
+  <a href="#elementosprincipais">Elementos Principais</a>   |   
+  <a href="#tecnologias-ferramentas">Tecnologias & Ferramentas</a>
+</p>
 
-Este projeto é um sistema web para gerenciamento e verificação de Centrais de Terminais Ópticos (CTOs) em redes GPON, desenvolvido para auxiliar técnicos e equipes de Backoffice de Redes na organização, monitoramento e geração de relatórios sobre o status das portas.
+## Sobre o projeto:
 
-## Funcionalidades
+Uma aplicação web para registro de atendimentos técnicos da Proxxima Telecom, projetada para facilitar a comunicação entre os técnicos de campo e a equipe de backoffice. Permite o registro rápido e eficiente de informações cruciais sobre o atendimento, como dados do cliente, informações do equipamento, tipo de serviço e descrição detalhada da ação realizada.
 
-*   **Interface Intuitiva:** Formulário simples para inserir informações sobre a CTO (Protocolo, Nome, GPON, Quantidade de Portas).
-*   **Geração Dinâmica da Tabela:** Criação automática de uma tabela com o número especificado de portas, permitindo o preenchimento do status de cada uma.
-*   **Relatórios Informativos:** Geração de relatórios resumidos com o status das portas (livres, em uso, com defeito, etc.) para auxiliar técnicos em campo.
-*   **Cópia Facilitada:** Botão "Gerar Relatório e Copiar" para gerar o relatório e copiá-lo para a área de transferência, facilitando o envio para técnicos.
-*   **Design Responsivo:** Layout que se adapta a diferentes tamanhos de tela, otimizado para uso em desktops.
+<h2 id="projeto">Apresentação do projeto:</h2> 
 
-## Como Usar
+[Aqui você pode adicionar um GIF ou screenshot da aplicação em funcionamento]
 
-1.  Abra o arquivo `index.html` em seu navegador.
-2.  Preencha os campos do formulário com as informações da CTO que deseja verificar.
-3.  Clique no botão "Adicionar" para gerar a tabela com as portas.
-4.  Preencha o status de cada porta na tabela (ID, Status, Verificação).
-5.  Clique no botão "Gerar Relatório e Copiar" para gerar o relatório e copiá-lo para a área de transferência.
-6.  Cole o relatório em um editor de texto ou envie diretamente para a equipe técnica.
+**Responsivo:** A aplicação é totalmente responsiva e se adapta a diferentes tamanhos de tela, desde desktops até dispositivos móveis.
 
-## Campos do Formulário
+<h2 id="funcionalidades">Funcionalidades:</h2>
 
-*   **Protocolo (Opcional):** Número ou código de protocolo associado à verificação.
-*   **Nome da caixa CTO:** Nome ou identificação da caixa CTO (ex: CTO-CENTRO-01).
-*   **Nome da GPON (Opcional):** Nome ou identificação da GPON à qual a CTO está conectada (ex: GPON001).
-*   **Quantidade de portas:** Número total de portas disponíveis na CTO (ex: 8, 16, 32).
+*   **Registro de Dados do Cliente:** Permite o registro de informações básicas do cliente, como protocolo e PPPoE.
+*   **Registro de Informações do Equipamento:** Permite o registro de informações detalhadas sobre o equipamento utilizado, como Serial ONU, Modo de Operação, Marca da ONU, VLAN e OLT.
+*   **Seleção do Tipo de Atendimento:** Permite a seleção do tipo de atendimento realizado (Instalação, Manutenção, Reparo, etc.).
+*   **Descrição Detalhada da Ação:** Permite a descrição detalhada da ação realizada pelo técnico.
+*   **Registro de Informações Adicionais:** Permite o registro de informações extras, como se a tentativa de solução foi realizada através do ANIEL.
+*   **Geração e Cópia do Resumo:** Gera um resumo formatado do atendimento e permite que o técnico copie o texto para a área de transferência com um único clique.
+*   **Integração com Zoho Cliq:** Permite que o técnico acesse rapidamente o chat do Zoho Cliq para compartilhar o resumo do atendimento com a equipe de backoffice.
 
-## Relatório Gerado
+## 💻 Deploy:
 
-O relatório gerado contém as seguintes informações:
+- ![Imagem do Projeto](./assets/img/Deploy.png)
 
-*   **Protocolo (se fornecido):** O número ou código de protocolo inserido.
-*   **Verificação CTO:** O nome da caixa CTO inserido.
-*   **GPON (se fornecido):** O nome da GPON inserido.
-*   **Portas livres:** Lista das portas que estão com status "Livre".
+<h2 id="layout">🔖 Layout:</h2> 
 
-## Créditos
+O layout do projeto foi criado com foco na usabilidade e na responsividade, utilizando uma paleta de cores moderna e agradável. As seções do formulário são organizadas de forma clara e intuitiva, facilitando o preenchimento dos dados.
 
-*   **Desenvolvedor:** Gabriel A. Souza - Backoffice Redes. Todos os direitos reservados.
-*   **Design:** Baseado em um template com paleta de cores moderna e responsiva, utilizando Bootstrap.
+Você pode visualizar a paleta de cores do projeto através [DESSE LINK](https://uicolors.app/create). A cor que deu origem a paletra de cores é #2B3591.
 
-## Licença
+<h2 id="elementosprincipais">Elementos principais da página:</h2>
 
-Todos os direitos reservados.
+*   Um cabeçalho com o título do projeto e a logo da Proxxima Telecom.
+*   Um formulário para registro das informações do atendimento.
+*   Um botão para gerar e copiar o resumo do atendimento.
+*   Um botão para acessar o chat do Zoho Cliq.
+*   Uma área para exibir o resumo do atendimento.
+*   Um rodapé com informações sobre o autor e os direitos reservados.
 
-## Imagem de Exemplo
+<h2 id="tecnologias-ferramentas">Tecnologias & Ferramentas:</h2>
 
-![Imagem do Projeto](./assets/img/aplicação.png)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![Bootstrap](https://img.shields.io/badge/bootstrap-%23563D7C.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
+![Font Awesome](https://img.shields.io/badge/Font%20Awesome-394A59?style=for-the-badge&logo=font%20awesome&logoColor=%236AF)
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+![GITHUB](https://img.shields.io/badge/github-18212d.svg?style=for-the-badge&logo=github&logoColor=white)
 
-## Contribuição
+### Tópicos abordados durante o projeto:
 
-Este projeto foi desenvolvido para uso interno da equipe. Contribuições externas não serão aceitas no momento.
+*   **JavaScript:**
+
+    *   Manipulação do DOM para obter e definir valores de elementos HTML.
+    *   Criação de funções para modularizar o código e facilitar a manutenção.
+    *   Utilização de condicionais para controlar o fluxo da aplicação.
+    *   Formatação de strings para criar o resumo do atendimento.
+    *   Utilização da API Clipboard para copiar o texto para a área de transferência.
+    *   Tratamento de eventos para responder às ações do usuário (cliques, mudanças, etc.).
+    *   Responsividade da página.
+*   **HTML5:**
+
+    *   Criação de um formulário com diferentes tipos de campos (text, select, textarea, radio).
+    *   Utilização de atributos para melhorar a acessibilidade (aria-label, aria-describedby).
+    *   Estruturação do código HTML com elementos semânticos (<header>, <nav>, <main>, <aside>, <footer>, <section>, etc.).
+*   **CSS3:**
+
+    *   Utilização de variáveis CSS para personalizar as cores e outros estilos.
+    *   Criação de um layout responsivo com Flexbox e Grid Layout.
+    *   Utilização de media queries para adaptar o layout a diferentes tamanhos de tela.
+    *   Estilização de formulários com foco na usabilidade e na acessibilidade.
+
+
+### Minhas redes e contato: 
+
+<a href="https://www.linkedin.com/in/gabriel-albuquerque-souza-desenvolvedor/" target="_blank" >![LinkedIn](https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white)</a>
+<a href="mailto:contato_gabriel_albuquerque@hotmail.com" target="_blank" >![GMAIL](https://img.shields.io/badge/GMAIL-D14836.svg?style=for-the-badge&logo=gmail&logoColor=white)</a>
+<a href="https://www.instagram.com/gabriell.dat/" target="_blank" >![instagram](https://img.shields.io/badge/-Instagram-%23E4405F?style=for-the-badge&logo=instagram&logoColor=white)</a>
+<a href="https://github.com/gabrieldev071" target="_blank" >![GitHub](https://img.shields.io/badge/github-18212d.svg?style=for-the-badge&logo=github&logoColor=white)</a>

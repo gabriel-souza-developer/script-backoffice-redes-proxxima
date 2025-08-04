@@ -1,93 +1,304 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VERIFICAR CTO - BACKOFFICE REDES</title>
-
+  <title>RELATÓRIO N2 - BACKOFFICE REDES - Proxxima Telecom</title>
+  <meta name="description" content="" />
   <link rel="icon" type="image/png" href="https://proxxima.net/storage/app/media/xx.ico" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="./assets/css/style.css" />
+  <link rel="preload" href="./assets/css/style.css" as="style" />
 </head>
+
 <body>
-  <div class="app-container">
+  <div class="container app-container">
     <header class="app-header">
       <div class="app-header__logo">
         <img src="./assets/img/Logo_Proxxima_Telecom.svg" alt="Logo Proxxima Telecom" />
       </div>
-      <h1>Verificar CTOs</h1>
-      <p>Sistema de Verificação de CTOs pelo time de N2 - Backoffice - Redes</p>
+      <h1 class="app-header__title">
+        Registro de Atendimento - Proxxima Telecom
+      </h1>
+      <p class="app-header__subtitle">
+        Preencha os dados abaixo para gerar o resumo e facilitar a comunicação
+        com o time do N2.
+      </p>
     </header>
 
     <main class="app-main">
-      <section class="form__section">
-        <h2 class="form__section-title">Preencha os dados para seguir com a verificação de CTO</h2>
-
-        <form id="ctoForm">
-          <div class="form-group">
-            <label for="protocoloInput">Protocolo:</label>
-            <input type="text" class="form-control" id="protocoloInput" placeholder="Ex: 6841641" />
-          </div>
+      <form id="formularioResumo" class="form" aria-label="Formulário de Registro de Atendimento">
+        <section class="form__section">
+          <h2 class="form__section-title">Informações do Cliente</h2>
 
           <div class="form-group">
-            <label for="ctoNameInput">Nome da Caixa CTO ou OLT:</label>
-            <input type="text" class="form-control" id="ctoNameInput" placeholder="Ex: CTO-SD1-A08" />
+            <label for="protocolo"> Protocolo (Opcional):</label>
+            <input type="text" id="protocolo" class="form-control" placeholder="Número do protocolo" />
           </div>
 
           <div class="form-group">
-            <label for="gponInput">Nome da GPON (opcional):</label>
-            <input type="text" class="form-control" id="gponInput" placeholder="Ex: 1/2/8" />
+            <label for="pppoe"> Usuário PPPoE: </label>
+            <input type="text" id="pppoe" class="form-control" placeholder="Usuário PPPoE" required />
+          </div>
+        </section>
+
+        <section class="form__section">
+          <h2 class="form__section-title">Tipo de Atendimento</h2>
+
+          <div class="form-check">
+            <input type="radio" id="instalacao" name="tipoServico" value="Instalação/ativação" class="form-check-input"
+              required />
+            <label class="form-check-label" for="instalacao">
+              Instalação/ativação
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="reparo" name="tipoServico" value="Reparo/manutenção" class="form-check-input" />
+            <label class="form-check-label" for="reparo">Reparo/manutenção</label>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="DificuldadesAcesso" name="tipoServico" value="Dificuldades de acesso"
+              class="form-check-input" />
+            <label class="form-check-label" for="DificuldadesAcesso">Dificuldades de acesso</label>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="trocaEndereco" name="tipoServico"
+              value="Troca de endereço - desprovisionar e provisionar ONU" class="form-check-input" />
+            <label class="form-check-label" for="trocaEndereco">
+              Troca de endereço - desprovisionar e provisionar ONU
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="verificarCto" name="tipoServico" value="Verificar CTO" class="form-check-input" />
+            <label class="form-check-label" for="verificarCto">
+              Verificar CTO - Caixa de Terminação Óptica
+            </label>
+          </div>
+
+          <!-- Campo de Quantidade de Portas (Oculto Inicialmente) -->
+          <div class="form-group" id="quantidadePortasCtoContainer" style="display: none">
+            <label for="quantidadePortasCto">Quantidade de Portas da CTO:</label>
+            <select class="form-control" id="quantidadePortasCto">
+              <option value="">Selecione...</option>
+              <option value="2">2</option>
+              <option value="4">4</option>
+              <option value="6">6</option>
+              <option value="8">8</option>
+              <option value="16">16</option>
+            </select>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="verificarConexao" name="tipoServico" value="Análise de conexão do cliente"
+              class="form-check-input" />
+            <label class="form-check-label" for="verificarConexao">
+              Análise de conexão do cliente
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="trocaEquipamento" name="tipoServico"
+              value="Troca de equipamento - desprovisionar e provisionar ONU" class="form-check-input" />
+            <label class="form-check-label" for="trocaEquipamento">
+              Troca de equipamento - desprovisionar e provisionar ONU
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="ipdedicado" name="tipoServico"
+              value="Solicitação de atribuição de IP fixo/dedicado ao cliente" class="form-check-input" />
+            <label class="form-check-label" for="ipdedicado">
+              Solicitação de atribuição de IP fixo/dedicado ao cliente.
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="redirecionamento_portas" name="tipoServico"
+              value="Redirecionamento de portas na REDE/ONU" class="form-check-input" />
+            <label class="form-check-label" for="redirecionamento_portas">
+              Redirecionamento de portas na REDE/ONU
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="plano_contratado_entregue" name="tipoServico"
+              value="Solicitação de atribuição de IP fixo/dedicado ao cliente" class="form-check-input" />
+            <label class="form-check-label" for="plano_contratado_entregue">
+              Plano Contratado X Plano Entregue - UPLOAD/DOWNLOAD
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="desprovisionamentoProvisionamento" name="tipoServico"
+              value="Desprovisionar e provisionar ONU" class="form-check-input" />
+            <label class="form-check-label" for="desprovisionamentoProvisionamento">
+              Desprovisionar e provisionar ONU
+            </label>
+            <small id="tipoEquipamentoHelp" class="form-text text-muted">Detalhe a situação no campo "DESCRIÇÃO
+              DETALHADA".</small>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="desprovisionar" name="tipoServico" value="Apenas desprovisionar"
+              class="form-check-input" />
+            <label class="form-check-label" for="desprovisionar">
+              Apenas desprovisionar
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="provisionar" name="tipoServico" value="Apenas provisionar"
+              class="form-check-input" />
+            <label class="form-check-label" for="provisionar">Apenas provisionar</label>
+          </div>
+
+          <div class="form-check">
+            <input type="radio" id="outro" name="tipoServico" value="Outro" class="form-check-input" />
+            <label class="form-check-label" for="outro"> Outro: </label>
+            <input type="text" id="outroTipoServico" class="form-control" placeholder="Descreva o tipo de serviço"
+              disabled />
+          </div>
+        </section>
+
+        <section class="form__section">
+          <h2 class="form__section-title">INFO. EQUIPAMENTOS</h2>
+          <div class="form-group">
+            <label for="serialOnuAntiga">SN do equipamento
+              <strong class="form_section-strong">ANTIGO</strong>
+              (Opcional):</label>
+            <input type="text" id="serialOnuAntiga" class="form-control" placeholder="ANTIGA ONU" />
           </div>
 
           <div class="form-group">
-            <label for="portCountInput">Quantidade de portas:</label>
-            <input type="number" class="form-control" id="portCountInput" placeholder="Ex: 6, 8, 12, 16" min="1" max="32" />
+            <label for="serialOnuNova">SN do equipamento
+              <strong class="form_section-strong">NOVO/ATUAL:</strong>
+            </label>
+            <input type="text" id="serialOnuNova" class="form-control" placeholder="NOVO/ATUAL:" />
+
+            <!--             <small id="serialOnuHelp" class="form-text text-muted">
+              Padrões: Huawei = 48575443 + 8 últimos dígitos | Nokia = 414C434C + 8 últimos dígitos | Fiberhome =
+              46485454 + 8 últimos dígitos
+            </small> -->
           </div>
 
-          <div class="form__buttons-container">
-            <button type="submit" class="btn btn-custom form__submit-button">Adicionar Informações na Tabela</button>
+          <div class="form-group">
+            <label for="tipoEquipamento">Modo operacional da ONU:</label>
+            <select class="form-control" id="tipoEquipamento" aria-describedby="tipoEquipamentoHelp">
+              <option value="">Selecione...</option>
+              <option value="AC/WI-FI - ROUTER">AC - ROUTER</option>
+              <option value="BRIDGE">BRIDGE</option>
+            </select>
+            <small id="tipoEquipamentoHelp" class="form-text text-muted">Selecione o modo de operação da ONU.</small>
           </div>
-        </form>
-      </section>
 
-      <section class="cto-list">
-        <div id="gponTitleContainer"></div>
+          <div class="form-group">
+            <label for="marcaONU">Marca da ONU (Opcional):</label>
+            <select class="form-control" id="marcaONU">
+              <option value="">Selecione...</option>
+              <option value="Nokia">Nokia</option>
+              <option value="Huawei">Huawei</option>
+              <option value="Fiberhome">Fiberhome</option>
+              <option value="Datacom">Datacom</option>
+              <option value="Intelbras">Intelbras</option>
+              <option value="ZTE">ZTE</option>
+            </select>
+          </div>
 
-        <div class="table-responsive">
-          <table class="cto-table">
-            <thead>
-              <tr>
-                <th>Porta</th>
-                <th>ID</th>
-                <th>Status</th>
-                <th>Verificação</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody id="ctoTableBody">
-              <!-- Linhas da tabela serão adicionadas dinamicamente -->
-            </tbody>
-          </table>
+          <div class="form-group">
+            <label for="vlan">VLAN preenchida na WAN (Opcional):</label>
+            <input type="text" id="vlan" class="form-control" placeholder="Número da VLAN" />
+          </div>
+
+          <div class="form-group">
+            <label for="olt"> Ponto de acesso - OLT: </label>
+            <input type="text" id="olt" class="form-control" placeholder="Nome da OLT" />
+          </div>
+        </section>
+
+        <section class="form__section">
+          <h2 class="form__section-title">Descrição detalhada - OPCIONAL</h2>
+
+          <div class="form-group">
+            <label for="descricaoServico">Descreva informações complementares que possam ajudar no
+              atendimento.
+            </label>
+            <textarea id="descricaoServico" class="form-control" rows="4"
+              placeholder="Exemplos: WAN já configurada, sinal -19, apenas desprovisionamento, cliente reclama do histórico de quedas..."></textarea>
+          </div>
+        </section>
+        <section class="form__section">
+          <h2 class="form__section-title">Procedimento no ANIEL</h2>
+          <div class="form-group">
+            <label for="tentouPeloAniel">Tentou pelo ANIEL?</label>
+            <select class="form-control" id="tentouPeloAniel" aria-describedby="tentouPeloAnielHelp" required>
+              <option value="">Selecione...</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+            <small id="tentouPeloAnielHelp" class="form-text text-muted">Informe se o procedimento padrão foi realizado
+              através do
+              ANIEL.</small>
+          </div>
+          <p class="form__observacao">
+            Em caso de provisionamento ou desprovisionamento e ocorrer algum
+            erro pelo ANIEL, o time do N2 irá lhe auxiliar para realizar o
+            processo.
+            <strong>Será necessário enviar um print da tela ou o código do erro para que o time interno possa atuar no
+              problema.</strong>
+          </p>
+        </section>
+        <p class="form__observacao">
+          Após preencher os campos, clique no botão
+          <strong>"GERAR RESUMO E COPIAR"</strong>...em seguida, abra o
+          <strong>APP ZOHO CLIQ...</strong> e cole o texto no campo de mensagens.
+        </p>
+        <aside class="app-aside">
+          <h2 class="app-aside__title">Relatório de atendimento</h2>
+          <div id="toast" class="toast hidden">
+            Resumo copiado para a área de transferência!
+          </div>
+          <div class="app-aside__content">
+            <pre id="resumoTexto" class="app-aside__text" aria-live="polite"></pre>
+          </div>
+        </aside>
+        <!-- Container para os botões -->
+        <div class="form__buttons-container">
+          <button type="button" id="gerarCopiarResumo" class="btn form__submit-button">
+            Gerar Resumo e Copiar
+          </button>
+          <a href="https://cliq.zoho.com/company/810817505/index.do" target="_blank" class="btn form__cliq-button">
+            Abrir no Zoho Cliq
+          </a>
         </div>
-
-        <button type="button" class="btn btn-custom hidden btn-teste" id="gerarRelatorioBtn">
-          Gerar Relatório e Copiar
-        </button>
-      </section>
-
-      <div id="relatorioContainer"></div>
+      </form>
     </main>
 
+    <!-- Botão para Rolar para o Fim -->
+    <button id="scrollToBottomBtn" title="Ir para o final da página" class="scroll-button">
+      <i class="fas fa-arrow-down"></i>
+      <!-- Ícone de seta para baixo (Font Awesome) -->
+    </button>
+
     <footer class="app-footer">
-      <p>© 2025 Gabriel A. Souza - Backoffice Redes. Todos os direitos reservados.</p>
-      <a href="https://github.com/gabriel-souza-developer/verificar-cto" target="_blank" class="app-footer__github-link">
+      <p>
+        © 2025 Gabriel A. Souza - Backoffice Redes. Todos os direitos
+        reservados.
+      </p>
+      <a href="https://github.com/gabriel-souza-developer/script-backoffice-redes-proxxima" target="_blank"
+        class="app-footer__github-link">
         <i class="fab fa-github"></i>
       </a>
     </footer>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="./assets/js/script.js"></script>
 </body>
+
 </html>
